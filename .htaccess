@@ -1,0 +1,18 @@
+# TagNPark
+Options -Indexes
+DirectoryIndex index.html
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # QR sticker links: /tagnpark/t/TNP-XXXXX  ->  scan page
+  RewriteRule ^t/([A-Za-z0-9-]+)/?$ index.html#scan-$1 [R=302,NE,L]
+  # Short admin link: /tagnpark/admin
+  RewriteRule ^admin/?$ index.html#admin [R=302,NE,L]
+</IfModule>
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  <FilesMatch "^(sw\.js|index\.html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

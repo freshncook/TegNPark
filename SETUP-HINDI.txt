@@ -1,0 +1,36 @@
+TagNPark – cPanel पर सेटअप (एक बार)
+=====================================
+
+1) डेटाबेस बनाएँ
+   cPanel > "MySQL Database Wizard"
+   - डेटाबेस का नाम: tagnpark   (cPanel आगे अपना prefix जोड़ देगा, जैसे ramakant_tagnpark)
+   - यूज़र का नाम: tnpuser      (जैसे ramakant_tnpuser), एक मज़बूत पासवर्ड बनाएँ और लिख लें
+   - Privileges: "ALL PRIVILEGES" पर टिक करें
+
+2) फ़ाइलें अपलोड करें
+   cPanel > File Manager > public_html > tagnpark फ़ोल्डर खोलें
+   - पुरानी फ़ाइलें हटा दें (index.html, manifest.json, sw.js, vercel.json, icons)
+   - TagNPark-cPanel.zip अपलोड करें > उस पर Right click > Extract
+   - ऊपर "Settings" > "Show Hidden Files" चालू करें और देखें कि .htaccess फ़ाइलें मौजूद हैं
+
+3) इंस्टॉलर चलाएँ
+   ब्राउज़र में खोलें:  https://ramakantrao.in/tagnpark/install.php
+   - डेटाबेस का नाम, यूज़र और पासवर्ड डालें (पूरा नाम prefix के साथ)
+   - अपना एडमिन ईमेल और पासवर्ड (कम से कम 10 अक्षर) डालें
+   - "Install TagNPark" दबाएँ
+
+4) दो-स्टेप लॉगिन सेट करें
+   फ़ोन में Google Authenticator ऐप डालें > + > Scan a QR code
+   इंस्टॉलर में दिख रहा QR स्कैन करें। "Setup key" को कहीं सुरक्षित लिख लें।
+
+5) install.php हटा दें
+   File Manager में tagnpark/install.php पर Right click > Delete
+
+6) एडमिन खोलें
+   https://ramakantrao.in/tagnpark/index.html#admin
+   ईमेल + पासवर्ड + Authenticator ऐप का 6 अंकों का कोड
+
+ज़रूरी:
+- api/config.php में डेटाबेस का पासवर्ड और गुप्त चाबी है। इसे कभी किसी को न भेजें, न डिलीट करें।
+- जब तक MSG91 (SMS) नहीं जुड़ता, OTP हर किसी के लिए 123456 है। तब तक असली ग्राहकों को टैग न दें।
+- बैकअप: cPanel > Backup > "Download a MySQL Database Backup" हर हफ़्ते लें।
