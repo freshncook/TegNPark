@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TagNPark — Reach any vehicle owner, privately</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0E1A2B">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E1A2B; --ink2:#22324A; --muted:#5B6678; --line:#E4E1D8;
+  --bg:#F7F5F0; --card:#FFFFFF; --amber:#FFB800; --amber2:#FFF3CC;
+  --green:#15803D; --green2:#DCFCE7; --red:#DC2626; --red2:#FEE2E2; --blue:#1D4ED8; --blue2:#DBEAFE;
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,"Noto Sans Devanagari",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:Sora,Inter,sans-serif;line-height:1.15;letter-spacing:-.02em}
+a{color:inherit}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.view{display:none}
+.view.on{display:block}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:12px;font-weight:600;text-decoration:none;transition:transform .12s, background .15s}
+.btn:active{transform:scale(.98)}
+.btn-amber{background:var(--amber);color:var(--ink)}
+.btn-amber:hover{background:#FFC72E}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink:hover{background:var(--ink2)}
+.btn-ghost{border:1.5px solid var(--line);background:#fff}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-red{background:var(--red);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-sm{padding:8px 14px;font-size:14px;border-radius:10px}
+.btn-block{width:100%}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:40;background:rgba(247,245,240,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-family:Sora;font-weight:800;font-size:21px;text-decoration:none;letter-spacing:-.03em}
+.logo b{color:#C98F00}
+.navlinks{display:flex;gap:26px;font-size:15px;font-weight:500;color:var(--ink2)}
+.navlinks a{text-decoration:none}
+.navlinks a:hover{color:var(--ink)}
+.navcta{display:flex;gap:10px}
+@media(max-width:900px){.navlinks{display:none}}
+@media(max-width:520px){.navcta .btn-ghost{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:72px 0 56px;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);padding:6px 12px;border-radius:99px;font-size:13px;font-weight:600;color:var(--ink2)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--green);display:block}
+.hero h1{font-size:clamp(38px,5.4vw,62px);font-weight:800;margin:18px 0 18px}
+.hero h1 span{background:linear-gradient(transparent 62%,var(--amber) 62%)}
+.hero p.lead{font-size:19px;color:var(--muted);max-width:540px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.trust{display:flex;gap:22px;margin-top:30px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+.trust div{display:flex;align-items:center;gap:6px}
+.heroart{position:relative;display:flex;justify-content:center}
+.decal{position:absolute;left:-10px;bottom:20px;width:170px;background:var(--amber);border-radius:18px;padding:14px;box-shadow:0 20px 40px rgba(14,26,43,.18);transform:rotate(-7deg);z-index:2}
+.decal .qr{background:#fff;border-radius:10px;padding:8px}
+.decal p{font-family:Sora;font-weight:700;font-size:12px;text-align:center;margin-top:8px;line-height:1.25}
+.miniphone{width:270px;height:540px;background:var(--ink);border-radius:40px;padding:12px;box-shadow:0 30px 60px rgba(14,26,43,.25)}
+.miniphone .scr{background:#F2F0EA;height:100%;border-radius:30px;overflow:hidden;padding:44px 14px 14px;position:relative}
+.notif{background:#fff;border-radius:16px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:10px;font-size:12.5px}
+.notif .top{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:4px}
+.notif b{display:block;font-size:13.5px}
+@media(max-width:900px){.hero .wrap{grid-template-columns:1fr}.heroart{margin-top:20px}}
+
+/* ---------- sections ---------- */
+section.sec{padding:84px 0}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#A87700}
+.sec h2{font-size:clamp(30px,3.6vw,44px);font-weight:800;margin:10px 0 14px;max-width:720px}
+.sec .sub{color:var(--muted);font-size:17px;max-width:620px}
+.dark{background:var(--ink);color:#fff}
+.dark .sub{color:#AEB8C8}
+.dark .eyebrow{color:var(--amber)}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+.step{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.step .n{width:40px;height:40px;border-radius:12px;background:var(--amber);font-family:Sora;font-weight:800;display:grid;place-items:center;margin-bottom:16px}
+.step h3{font-size:20px;margin-bottom:8px}
+.step p{color:var(--muted)}
+@media(max-width:800px){.steps{grid-template-columns:1fr}}
+
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.feat{background:var(--ink2);border-radius:var(--r);padding:24px;border:1px solid #34465F}
+.feat .ic{width:44px;height:44px;border-radius:12px;background:rgba(255,184,0,.14);display:grid;place-items:center;margin-bottom:16px}
+.feat h3{font-size:18px;margin-bottom:6px}
+.feat p{color:#AEB8C8;font-size:15px}
+@media(max-width:900px){.feats{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.feats{grid-template-columns:1fr}}
+
+.privacy{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.plist{display:grid;gap:14px;margin-top:26px}
+.plist div{display:flex;gap:12px;align-items:flex-start}
+.plist svg{flex:none;margin-top:3px}
+.scancard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 20px 40px rgba(14,26,43,.06)}
+.plate{display:inline-flex;align-items:center;gap:8px;border:2.5px solid var(--ink);border-radius:8px;padding:6px 14px;font-family:Sora;font-weight:800;font-size:22px;letter-spacing:.06em;background:#fff}
+.plate small{font-size:10px;font-weight:700;background:var(--blue);color:#fff;padding:2px 4px;border-radius:3px;letter-spacing:0}
+@media(max-width:900px){.privacy{grid-template-columns:1fr}}
+
+.prices{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+.price{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column}
+.price.hot{border-color:var(--ink);box-shadow:0 14px 30px rgba(14,26,43,.1);position:relative}
+.price.hot:before{content:"Most popular";position:absolute;top:-12px;left:20px;background:var(--amber);font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px}
+.price h3{font-size:19px}
+.price .amt{font-family:Sora;font-weight:800;font-size:34px;margin:12px 0 2px}
+.price .amt s{font-size:16px;color:var(--muted);font-weight:500;margin-left:6px}
+.price .once{color:var(--muted);font-size:13px;margin-bottom:16px}
+.price ul{list-style:none;display:grid;gap:8px;font-size:14.5px;margin-bottom:22px;flex:1}
+.price li:before{content:"✓";color:var(--green);font-weight:700;margin-right:8px}
+@media(max-width:1000px){.prices{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.prices{grid-template-columns:1fr}}
+
+.b2b{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+.b2b div{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.b2b h4{font-size:17px;margin:12px 0 6px}
+.b2b p{color:var(--muted);font-size:14.5px}
+@media(max-width:900px){.b2b{grid-template-columns:1fr 1fr}}
+
+.soon{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.soon span{background:#fff;border:1px dashed #C9C4B6;padding:9px 14px;border-radius:99px;font-size:14px;font-weight:500}
+
+.download{background:var(--amber);border-radius:28px;padding:56px;display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:center}
+.download h2{margin-top:0}
+.download .sub{color:var(--ink2)}
+.stores{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.store{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:12px;padding:10px 18px;text-align:left;min-width:180px}
+.store small{display:block;font-size:11px;opacity:.75;line-height:1.1}
+.store b{font-size:17px;font-family:Sora;line-height:1.1}
+.store.web{background:#fff;color:var(--ink)}
+.qrbox{background:#fff;border-radius:20px;padding:20px;text-align:center}
+.qrbox p{font-size:13.5px;font-weight:600;margin-top:10px}
+@media(max-width:900px){.download{grid-template-columns:1fr;padding:32px}}
+
+.faq{max-width:780px;margin-top:36px}
+.faq details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:10px}
+.faq summary{font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+.faq summary:after{content:"+";font-size:20px;line-height:1}
+.faq details[open] summary:after{content:"–"}
+.faq p{color:var(--muted);margin-top:10px}
+
+footer{background:var(--ink);color:#AEB8C8;padding:52px 0 30px;font-size:14px}
+footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:30px}
+footer h5{color:#fff;font-size:14px;margin-bottom:12px;font-family:Sora}
+footer a{display:block;text-decoration:none;margin-bottom:8px}
+footer a:hover{color:#fff}
+footer .bottom{border-top:1px solid #2B3B54;margin-top:36px;padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media(max-width:800px){footer .cols{grid-template-columns:1fr 1fr}}
+
+/* ---------- modal + toast ---------- */
+.modal{position:fixed;inset:0;background:rgba(14,26,43,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal.on{display:flex}
+.modal .box{background:#fff;border-radius:22px;max-width:460px;width:100%;padding:28px;max-height:90vh;overflow:auto}
+.modal h3{font-size:22px;margin-bottom:6px}
+.field{display:grid;gap:6px;margin-top:14px}
+.field label{font-size:13px;font-weight:600;color:var(--ink2)}
+.field input,.field select,.field textarea{border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;background:#fff;outline:none;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.payopts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.payopts label{border:1.5px solid var(--line);border-radius:10px;padding:10px 4px;text-align:center;font-size:13px;font-weight:600;cursor:pointer}
+.payopts input{display:none}
+.payopts input:checked+span{color:var(--ink)}
+.payopts label:has(input:checked){border-color:var(--ink);background:var(--amber2)}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:14.5px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- APP VIEW ---------- */
+.appstage{min-height:calc(100vh - 68px);display:grid;grid-template-columns:1fr auto 1fr;gap:40px;align-items:center;padding:36px 24px}
+.appside{max-width:320px}
+.appside h2{font-size:28px;font-weight:800;margin-bottom:10px}
+.appside p{color:var(--muted);font-size:15px;margin-bottom:14px}
+.appside .tip{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:14px;margin-bottom:10px}
+.appside .tip b{display:block;margin-bottom:2px}
+.device{width:390px;height:800px;background:var(--ink);border-radius:52px;padding:13px;box-shadow:0 40px 80px rgba(14,26,43,.28);position:relative}
+.device:before{content:"";position:absolute;top:24px;left:50%;transform:translateX(-50%);width:110px;height:30px;background:var(--ink);border-radius:20px;z-index:5}
+.screen{background:#F4F2EC;height:100%;border-radius:40px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.sbar{height:52px;flex:none;display:flex;justify-content:space-between;align-items:flex-end;padding:0 28px 6px;font-size:13px;font-weight:600}
+.ascr{flex:1;overflow-y:auto;padding:6px 18px 18px;scrollbar-width:none}
+.ascr::-webkit-scrollbar{display:none}
+.tabs{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);padding:8px 6px 18px}
+.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#8A93A3;position:relative}
+.tabs button.on{color:var(--ink)}
+.tabs button.on svg{stroke:var(--ink)}
+.tabs .dot{position:absolute;top:-2px;right:18px;background:var(--red);color:#fff;font-size:10px;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+@media(max-width:1100px){.appstage{grid-template-columns:1fr;justify-items:center}.appside{max-width:520px;text-align:center}.appside.r{display:none}}
+@media(max-width:480px){
+  .appstage{padding:0;gap:0;min-height:auto}
+  .appside{display:none}
+  .device{width:100vw;height:calc(100vh - 68px);border-radius:0;padding:0;box-shadow:none}
+  .device:before{display:none}
+  .screen{border-radius:0}
+  .sbar{height:20px}
+}
+
+/* app components */
+.ah{display:flex;justify-content:space-between;align-items:center;margin:6px 0 16px}
+.ah h3{font-size:22px;font-weight:800}
+.back{display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px;margin:4px 0 12px;color:var(--ink2)}
+.acard{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid #ECE9E1}
+.acard h4{font-size:15.5px;margin-bottom:2px}
+.muted{color:var(--muted);font-size:13px}
+.vrow{display:flex;gap:12px;align-items:center}
+.vic{width:46px;height:46px;border-radius:14px;background:var(--amber2);display:grid;place-items:center;flex:none}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:99px}
+.t-green{background:var(--green2);color:var(--green)}
+.t-red{background:var(--red2);color:var(--red)}
+.t-amber{background:var(--amber2);color:#946600}
+.t-blue{background:var(--blue2);color:var(--blue)}
+.t-grey{background:#EEF0F3;color:#5B6678}
+.sos{width:100%;background:var(--red);color:#fff;border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;text-align:left;margin-bottom:12px;box-shadow:0 10px 20px rgba(220,38,38,.25)}
+.sos .ring{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-family:Sora;font-weight:800;font-size:14px;flex:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.qa{background:#fff;border:1px solid #ECE9E1;border-radius:16px;padding:14px;text-align:left}
+.qa b{display:block;font-size:14px;margin-top:8px}
+.qa span{font-size:12px;color:var(--muted)}
+.list-i{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #F0EDE6}
+.list-i:last-child{border-bottom:0}
+.list-i .grow{flex:1;min-width:0}
+.sw{width:44px;height:26px;border-radius:13px;background:#D5D9E0;position:relative;flex:none;transition:.2s}
+.sw:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw.on{background:var(--green)}
+.sw.on:after{left:21px}
+.ain{border:1.5px solid var(--line);border-radius:12px;padding:12px;background:#fff;width:100%;outline:none}
+.ain:focus{border-color:var(--ink)}
+.alab{font-size:12.5px;font-weight:600;color:var(--ink2);margin:12px 0 6px;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 12px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:600}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.map{height:170px;border-radius:14px;overflow:hidden;position:relative;background:#E7EEE3}
+.otpbox{display:flex;gap:8px;justify-content:space-between}
+.otpbox input{width:44px;height:52px;text-align:center;font-size:20px;font-weight:700;border:1.5px solid var(--line);border-radius:12px;background:#fff}
+.banner{border-radius:14px;padding:12px 14px;font-size:13.5px;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start}
+.empty{text-align:center;padding:30px 10px;color:var(--muted)}
+.chat{display:grid;gap:8px;margin:10px 0}
+.msg{max-width:80%;padding:9px 12px;border-radius:14px;font-size:13.5px}
+.msg.them{background:#fff;border:1px solid #ECE9E1}
+.msg.me{background:var(--ink);color:#fff;justify-self:end}
+.livebar{background:var(--green);color:#fff;font-size:12px;font-weight:600;text-align:center;padding:5px}
+.pulse{width:10px;height:10px;border-radius:50%;background:#fff;display:inline-block;margin-right:6px;animation:p 1.4s infinite}
+@keyframes p{0%{box-shadow:0 0 0 0 rgba(255,255,255,.7)}100%{box-shadow:0 0 0 10px rgba(255,255,255,0)}}
+
+/* ---------- SCAN VIEW ---------- */
+.scanpage{max-width:480px;margin:0 auto;padding:22px 18px 60px}
+.scanhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.langsw{display:flex;background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px}
+.langsw button{padding:5px 12px;border-radius:99px;font-size:13px;font-weight:600}
+.langsw button.on{background:var(--ink);color:#fff}
+.reasons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reason{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:13px 12px;text-align:left;font-weight:600;font-size:14px;display:flex;align-items:center;gap:10px}
+.reason .e{font-size:20px}
+.reason.on{border-color:var(--ink);background:var(--amber2)}
+.reason.urgent{border-color:#F5B5B5}
+.reason.urgent.on{background:var(--red2);border-color:var(--red)}
+.emerg{background:var(--red);color:#fff;border-radius:18px;padding:18px;margin-bottom:16px}
+.emerg .nums{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.emerg a{background:#fff;color:var(--red);text-decoration:none;border-radius:12px;padding:12px;text-align:center;font-family:Sora;font-weight:800;font-size:22px}
+.emerg a small{display:block;font-family:Inter;font-size:12px;font-weight:600}
+.timeline{display:grid;gap:0;margin:16px 0}
+.tl{display:flex;gap:12px;align-items:flex-start;position:relative;padding-bottom:18px}
+.tl:not(:last-child):before{content:"";position:absolute;left:11px;top:24px;bottom:0;width:2px;background:var(--line)}
+.tl.done:not(:last-child):before{background:var(--green)}
+.tl .c{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:#fff;flex:none;display:grid;place-items:center;font-size:12px;color:#fff}
+.tl.done .c{background:var(--green);border-color:var(--green)}
+.tl.wait .c{border-color:var(--amber);animation:p2 1.2s infinite}
+@keyframes p2{50%{background:var(--amber2)}}
+.photo-prev{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-top:8px}
+/* ---------- ADMIN ---------- */
+body.admin .nav,body.scanv .nav{display:none}
+body.admin{background:#F1EFE9}
+.adm-login{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.adm-login .l{background:var(--ink);color:#fff;padding:48px;display:flex;flex-direction:column;justify-content:space-between}
+.adm-login .l h2{font-size:36px;font-weight:800;margin:20px 0 12px;max-width:420px}
+.adm-login .l p{color:#AEB8C8;max-width:420px}
+.adm-login .r{display:grid;place-items:center;padding:30px}
+.adm-login .card{background:#fff;border-radius:22px;padding:34px;width:100%;max-width:420px;box-shadow:0 20px 50px rgba(14,26,43,.08)}
+.adm-login .card h3{font-size:24px;margin-bottom:4px}
+.pwbox{position:relative}
+.pwbox button{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:600;color:var(--muted)}
+.err{background:var(--red2);color:var(--red);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-top:14px}
+@media(max-width:860px){.adm-login{grid-template-columns:1fr}.adm-login .l{padding:28px}.adm-login .l .hide-sm{display:none}}
+
+.adm{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.side{background:var(--ink);color:#C9D1DD;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.side .logo{color:#fff;font-size:19px;padding:0 8px 22px}
+.side .logo b{color:var(--amber)}
+.side button.nv{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font-size:14.5px;font-weight:500;text-align:left;margin-bottom:2px}
+.side button.nv:hover{background:#1A2940;color:#fff}
+.side button.nv.on{background:var(--amber);color:var(--ink);font-weight:700}
+.side .nv .cnt{margin-left:auto;background:var(--red);color:#fff;font-size:11px;border-radius:99px;padding:1px 7px}
+.side .me{margin-top:auto;border-top:1px solid #2B3B54;padding:14px 8px 0;font-size:13px}
+.side .me b{color:#fff;display:block}
+.amain{padding:28px 32px 60px;min-width:0}
+.atop{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.atop h2{font-size:26px;font-weight:800}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.kpi .v{font-family:Sora;font-weight:800;font-size:28px;margin:4px 0 2px}
+.kpi .k{font-size:13px;color:var(--muted);font-weight:600}
+.kpi .t{font-size:12.5px}
+.ok{color:var(--green)}.bad{color:var(--red)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px;overflow:auto}
+.panel h3{font-size:17px;margin-bottom:14px}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.t td{padding:10px;border-bottom:1px solid #F0EDE6;vertical-align:middle}
+table.t tr:last-child td{border-bottom:0}
+.bars{display:grid;gap:9px}
+.bar{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;font-size:13.5px}
+.bar i{display:block;height:12px;border-radius:6px;background:var(--amber)}
+.vbars{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:10px}
+.vbars div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--muted);height:100%;justify-content:flex-end}
+.vbars i{width:100%;background:var(--ink);border-radius:6px 6px 0 0;min-height:3px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filters input,.filters select{border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff;outline:none}
+.sel{border:1.5px solid var(--line);border-radius:8px;padding:5px 8px;background:#fff;font-size:13px}
+.demo-pill{font-size:12px;font-weight:700;background:var(--amber2);color:#946600;padding:4px 10px;border-radius:99px}
+.mtop{display:none}
+@media(max-width:1000px){.kpis{grid-template-columns:1fr 1fr}.cols2{grid-template-columns:1fr}}
+@media(max-width:760px){
+  .adm{grid-template-columns:1fr}
+  .side{position:fixed;left:0;top:0;bottom:0;width:250px;z-index:60;transform:translateX(-100%);transition:.2s}
+  .side.open{transform:none}
+  .mtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .amain{padding:18px}
+  .atop .demo-pill{display:none}
+  .bar{grid-template-columns:110px 1fr 34px}
+}
+
+/* ---------- printable sticker sheet ---------- */
+#printSheet{display:none}
+body.printing>*:not(#printSheet):not(#toast):not(#modal){display:none!important}
+body.printing #printSheet{display:block;padding:0 0 30px;background:#fff;min-height:100vh}
+.ps-bar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;padding:12px 16px;flex-wrap:wrap}
+.ps-grid{display:grid;grid-template-columns:repeat(3,62mm);gap:4mm;justify-content:center;padding:6mm 0}
+.stk{width:62mm;height:88mm;border-radius:4mm;background:#FFB800;padding:3mm;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:space-between;break-inside:avoid;page-break-inside:avoid;font-family:Sora,Inter,sans-serif;color:#0E1A2B;-webkit-print-color-adjust:exact;print-color-adjust:exact;outline:1px dashed #C9C4B6;outline-offset:1mm}
+.stk-top,.stk-bot{font-weight:800;font-size:10.5pt;line-height:1.15}
+.stk-top span,.stk-bot span{font-family:"Noto Sans Devanagari",sans-serif;font-weight:600;font-size:8.5pt}
+.stk-qr{background:#fff;border-radius:3mm;padding:1.5mm;width:42mm}
+.stk-code{font-family:ui-monospace,Consolas,monospace;font-weight:700;font-size:10pt;background:#0E1A2B;color:#fff;border-radius:2mm;padding:.6mm 3mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.stk-brand{font-weight:800;font-size:9pt}.stk-brand b{color:#fff}
+@media print{.ps-bar{display:none!important}@page{size:A4;margin:8mm}.ps-grid{gap:3mm;padding:0}.stk{outline:none}}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<nav class="nav">
+  <div class="wrap">
+    <a href="#home" class="logo" aria-label="TagNPark home">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="#FFB800"/><path d="M11 25V9h7.2c3.6 0 5.8 2 5.8 5.1s-2.2 5.1-5.8 5.1H14.6V25z M14.6 16.3h3.3c1.6 0 2.5-.8 2.5-2.2s-.9-2.2-2.5-2.2h-3.3z" fill="#0E1A2B"/><rect x="24" y="24" width="4" height="4" rx="1" fill="#0E1A2B"/></svg>
+      <span>Tag<b>N</b>Park</span>
+    </a>
+    <div class="navlinks">
+      <a href="#how" data-site>How it works</a>
+      <a href="#features" data-site>Features</a>
+      <a href="#pricing" data-site>Pricing</a>
+      <a href="#business" data-site>For business</a>
+      <a href="#scan">Try a scan</a>
+    </div>
+    <div class="navcta">
+      <a href="#app" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="#download" class="btn btn-amber btn-sm" data-site>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>
+        Download app
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= WEBSITE ================= -->
+<main id="v-site" class="view on">
+
+  <header class="hero">
+    <div class="wrap">
+      <div>
+        <span class="pill"><i></i> Made for Indian roads · English & हिंदी</span>
+        <h1>Someone needs you to move your car? <span>Let them reach you</span>, not your number.</h1>
+        <p class="lead">Stick a TagNPark QR tag on your vehicle. Anyone can scan it to alert you or call you through a masked number. They never see your phone number or address.</p>
+        <div class="ctas">
+          <a href="#download" class="btn btn-ink">Download the app</a>
+          <a href="#scan" class="btn btn-ghost">See what a scan looks like →</a>
+        </div>
+        <div class="trust">
+          <div>🔒 Number never shown</div>
+          <div>⚡ Alert in under 10 sec</div>
+          <div>♾️ One-time payment, lifetime tag</div>
+        </div>
+      </div>
+      <div class="heroart">
+        <div class="decal">
+          <div class="qr" id="heroQR"></div>
+          <p>Need me to move?<br>Scan to contact owner</p>
+        </div>
+        <div class="miniphone">
+          <div class="scr">
+            <div class="notif"><div class="top"><span>TagNPark · now</span><span>🔔</span></div><b>Your Creta is blocking a gate</b>Gate no. 2, Indiranagar · Photo attached</div>
+            <div class="notif"><div class="top"><span>TagNPark · 2 min</span><span>💬</span></div><b>Reporter: "Need to take my car out"</b>Tap to reply or call (masked)</div>
+            <div class="notif" style="background:#FEE2E2"><div class="top"><span>Insurance reminder</span><span>📄</span></div><b>KA-01-AB-1234 renews in 7 days</b>Policy expires 18 Nov</div>
+            <div style="position:absolute;left:14px;right:14px;bottom:16px">
+              <div style="background:var(--ink);color:#fff;border-radius:14px;padding:12px;text-align:center;font-weight:600;font-size:13px">Coming in 5 min 👍</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="sec" id="how">
+    <div class="wrap">
+      <div class="eyebrow">How it works</div>
+      <h2>Three steps. No phone number on your windscreen.</h2>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><h3>Buy and stick the tag</h3><p>Order a weatherproof QR decal for your car or bike. One-time payment, valid for the life of the tag.</p></div>
+        <div class="step"><div class="n">2</div><h3>Activate in the app</h3><p>Log in with your mobile OTP, add your vehicle, scan the tag. Set quiet hours and add up to 5 emergency contacts.</p></div>
+        <div class="step"><div class="n">3</div><h3>Get alerted, stay private</h3><p>Anyone can scan with their phone camera, no app needed. You get a push, then SMS, then WhatsApp if you don't see it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec dark" id="features">
+    <div class="wrap">
+      <div class="eyebrow">Everything in one app</div>
+      <h2>More than a parking tag</h2>
+      <p class="sub">Alerts are the start. TagNPark also keeps your family informed in an emergency and your papers in order.</p>
+      <div class="feats">
+        <div class="feat"><div class="ic">🔔</div><h3>Instant alerts</h3><p>Wrong parking, lights on, towing, unlocked. Push first, SMS after 60 seconds, WhatsApp after 3 minutes.</p></div>
+        <div class="feat"><div class="ic">📞</div><h3>Masked calling and chat</h3><p>Talk to the person who scanned through a virtual number. Chat closes by itself after 24 hours.</p></div>
+        <div class="feat"><div class="ic">🚑</div><h3>Accident alert to family</h3><p>If someone reports an accident, your emergency contacts get your location right away, even during quiet hours.</p></div>
+        <div class="feat"><div class="ic">🆘</div><h3>One-tap SOS</h3><p>Send live location to your emergency contacts and see the nearest hospitals and police stations.</p></div>
+        <div class="feat"><div class="ic">📍</div><h3>Track me</h3><p>Share your live location for 30 minutes to 8 hours. You can stop it whenever you want.</p></div>
+        <div class="feat"><div class="ic">📄</div><h3>Document vault</h3><p>Keep RC, insurance, PUC and DL in one place. Reminders 30, 7 and 1 day before anything expires.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap privacy">
+      <div>
+        <div class="eyebrow">Privacy first</div>
+        <h2>Here's everything a stranger sees when they scan your tag</h2>
+        <p class="sub">The QR holds only a random code. Your details stay with us, stored in India, encrypted.</p>
+        <div class="plist">
+          <div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.6"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>They see:</b> vehicle type, colour and a partly hidden number.</span></div>
+          <div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>They never see:</b> your name, phone number or address.</span></div>
+          <div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.6"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Spam control:</b> reporters verify their own number by OTP, and you can block anyone.</span></div>
+          <div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.6"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Your rules:</b> calls on or off, chat only, quiet hours.</span></div>
+        </div>
+      </div>
+      <div class="scancard">
+        <div class="muted" style="margin-bottom:10px">tagnpark.in/t/7Q2X9… opens:</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+          <div class="vic" style="width:56px;height:56px">🚗</div>
+          <div><div class="muted">White SUV</div><div class="plate"><small>IND</small>KA-01-**-1234</div></div>
+        </div>
+        <div style="font-weight:700;margin-bottom:10px">What's the problem?</div>
+        <div class="reasons">
+          <div class="reason"><span class="e">🚧</span>Blocking my gate</div>
+          <div class="reason"><span class="e">💡</span>Lights left on</div>
+          <div class="reason"><span class="e">🚛</span>Being towed</div>
+          <div class="reason urgent"><span class="e">🚑</span>Accident</div>
+        </div>
+        <a href="#scan" class="btn btn-ink btn-block" style="margin-top:16px">Try the live scan page</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="pricing" style="padding-top:20px">
+    <div class="wrap">
+      <div class="eyebrow">Pricing</div>
+      <h2>Pay once. Your tag works for life.</h2>
+      <p class="sub">No monthly fee for alerts and masked calls. Free delivery across India.</p>
+      <div class="prices" id="priceGrid"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="business" style="background:#EFECE4">
+    <div class="wrap">
+      <div class="eyebrow">TagNPark for business</div>
+      <h2>Know whose car is in your parking</h2>
+      <p class="sub">Bulk tags with your own batch, and a console to see vehicles, members and alert logs for your premises.</p>
+      <div class="b2b">
+        <div><span style="font-size:26px">🏘️</span><h4>Housing societies</h4><p>Reach residents and visitors without a guard ringing every flat.</p></div>
+        <div><span style="font-size:26px">🏢</span><h4>Offices and tech parks</h4><p>Clear blocked bays fast and keep a log of incidents.</p></div>
+        <div><span style="font-size:26px">🏨</span><h4>Hotels and malls</h4><p>Contact guests about their vehicle without asking reception.</p></div>
+        <div><span style="font-size:26px">🚚</span><h4>Fleets and school buses</h4><p>Live location, driver contact and document expiry for every vehicle.</p></div>
+      </div>
+      <button class="btn btn-ink" style="margin-top:28px" onclick="openModal('b2b')">Request bulk pricing</button>
+      <div style="margin-top:46px">
+        <h3 style="font-size:20px">Coming next to the app</h3>
+        <div class="soon"><span>FASTag recharge</span><span>Challan check and pay</span><span>RC / DL / PUC status</span><span>Insurance renewal quotes</span><span>Fuel, EV charger and hospital map</span><span>Mileage, EMI and GST calculators</span><span>Fleet GPS dashboard</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="download">
+    <div class="wrap">
+      <div class="download">
+        <div>
+          <div class="eyebrow" style="color:var(--ink)">Download the app</div>
+          <h2>Get TagNPark on your phone</h2>
+          <p class="sub">Activate tags, get alerts, share your location and keep your documents. Works on Android 8+ and iOS 15+.</p>
+          <div class="stores">
+            <button class="store" onclick="storeSoon('Google Play')">
+              <svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 2.8v18.4c0 .5.5.8.9.6l10.4-9.6L5 2.2c-.5-.2-1 .1-1 .6z" fill="#34D399"/><path d="M15.3 12.2L18.6 9l3 1.7c.8.5.8 1.6 0 2.1l-3 1.7z" fill="#FBBF24"/><path d="M4.9 21.8l13.7-7.3-3.3-2.3z" fill="#F87171"/><path d="M4.9 2.2l13.7 6.8-3.3 3.2z" fill="#60A5FA"/></svg>
+              <span><small>GET IT ON</small><b>Google Play</b></span>
+            </button>
+            <button class="store" onclick="storeSoon('App Store')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9s-2-.9-3.4-.9C5.8 6.8 4.2 7.8 3.3 9.4c-1.8 3.1-.5 7.8 1.3 10.3.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.4.8 2.2-1.3 3-2.5c1-1.4 1.4-2.8 1.4-2.9 0 0-2.6-1-2.5-4.3zM13.9 5c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>
+              <span><small>Download on the</small><b>App Store</b></span>
+            </button>
+            <button class="store web installBtn" style="display:none" onclick="installApp()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E1A2B" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+              <span><small>ON THIS DEVICE</small><b>Install app</b></span>
+            </button>
+            <a class="store web" href="#app">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E1A2B" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+              <span><small>NO INSTALL NEEDED</small><b>Open web app</b></span>
+            </a>
+          </div>
+        </div>
+        <div class="qrbox">
+          <div id="dlQR" style="width:170px;margin:0 auto"></div>
+          <p>Scan with your phone camera<br>to get the app</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" style="padding-top:10px">
+    <div class="wrap">
+      <div class="eyebrow">FAQ</div>
+      <h2>Questions people ask</h2>
+      <div class="faq">
+        <details><summary>Can someone find my phone number from the QR code?</summary><p>No. The QR holds only a random code. Calls go through a virtual number that expires after 30 minutes, so neither side sees the other's real number.</p></details>
+        <details><summary>Does the person scanning need the app?</summary><p>No. The phone camera opens a web page. They pick a reason, verify their own number by OTP, and send an alert or call you.</p></details>
+        <details><summary>What if I don't see the notification?</summary><p>If you don't open the push in 60 seconds, we send an SMS. If it's still unread after 3 minutes, we send a WhatsApp message or an automated voice call.</p></details>
+        <details><summary>What stops people from sending fake alerts?</summary><p>Every reporter verifies their number. There are limits on how many reports one person can send, and you can mark an alert as spam or block the reporter.</p></details>
+        <details><summary>I sold my car. Can I move the tag?</summary><p>Yes. You can move a tag to another vehicle you own, or switch off a lost tag from the app.</p></details>
+        <details><summary>Where is my data stored?</summary><p>All personal data stays in India, encrypted. You can download or delete your data at any time, as required by the DPDP Act, 2023.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="cols">
+        <div>
+          <div class="logo" style="color:#fff;margin-bottom:12px"><span>Tag<b style="color:var(--amber)">N</b>Park</span></div>
+          <p style="max-width:300px">QR tags that let anyone reach a vehicle owner without seeing their number.</p>
+        </div>
+        <div><h5>Product</h5><a href="#how" data-site>How it works</a><a href="#features" data-site>Features</a><a href="#pricing" data-site>Pricing</a><a href="#download" data-site>Download app</a></div>
+        <div><h5>Business</h5><a href="#business" data-site>Societies</a><a href="#business" data-site>Offices and hotels</a><a href="#business" data-site>Fleets</a></div>
+        <div><h5>Help</h5><a href="#scan">Try a scan</a><a href="#app">Log in / web app</a><a href="#admin">Admin login</a><a href="javascript:void(0)" onclick="toast('support@tagnpark.in')">support@tagnpark.in</a></div>
+      </div>
+      <div class="bottom"><span>© 2026 TagNPark. All rights reserved.</span><span>Privacy · Terms · Grievance officer</span></div>
+    </div>
+  </footer>
+</main>
+
+<!-- ================= APP ================= -->
+<main id="v-app" class="view">
+  <div class="appstage">
+    <div class="appside">
+      <h2>TagNPark app</h2>
+      <p>This is the owner app. Log in with your mobile number and OTP.</p>
+      <div class="tip"><b>Try this</b>Open <a href="#scan">the scan page</a>, report a problem, then come back. The alert shows up here under Alerts.</div>
+      <div class="tip"><b>Mode</b><span class="mode-note">Checking…</span></div>
+      <button class="btn btn-ghost btn-sm" onclick="resetDemo()">Reset demo</button>
+    </div>
+    <div class="device"><div class="screen" id="screen"></div></div>
+    <div class="appside r">
+      <div class="tip"><b>🔔 Alerts</b>Reply with one tap, call through a masked number, block or mark spam.</div>
+      <div class="tip"><b>🆘 SOS</b>Sends your location to emergency contacts.</div>
+      <div class="tip"><b>📍 Track me</b>Share live location for a set time. Stop any time.</div>
+      <div class="tip"><b>📄 Vault</b>Documents with expiry reminders at 30, 7 and 1 day.</div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= SCAN PAGE ================= -->
+<main id="v-scan" class="view">
+  <div class="scanpage" id="scanRoot"></div>
+</main>
+
+<!-- ================= ADMIN ================= -->
+<main id="v-admin" class="view"><div id="adminRoot"></div></main>
+
+<!-- ================= MODAL ================= -->
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="box" id="modalBox"></div></div>
+<div id="toast"></div>
+<div id="printSheet"></div>
+
+<script>/* qrcode-generator 1.4.4, MIT, (c) Kazuhiko Arase */
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1})},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(){var t=n("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
+</script>
+<script>
+/* =====================================================================
+   TagNPark front-end
+   One code path for two modes:
+   - SERVER mode: talks to api/index.php (PHP + MySQL on your hosting)
+   - DEMO mode:   no server found (e.g. preview), same API emulated in this browser
+   ===================================================================== */
+const DAY=864e5;
+const now=()=>Date.now();
+const uid=()=>Math.random().toString(36).slice(2,9);
+function ago(t){const s=Math.floor((now()-t)/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' hr ago';return Math.floor(s/86400)+' d ago'}
+function fmtDate(t){return new Date(t).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+function dur(sec){if(sec==null)return'—';if(sec<60)return Math.round(sec)+' s';if(sec<3600)return Math.round(sec/60)+' min';return(sec/3600).toFixed(1)+' hr'}
+function mask(reg){const p=String(reg).split('-');if(p.length===4)return`${p[0]}-${p[1]}-**-${p[3]}`;return String(reg).slice(0,4)+'**'+String(reg).slice(-4)}
+function maskPhone(p){p=String(p);return p.length>=10?p.slice(0,2)+'xxxxxx'+p.slice(-2):p}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),3200)}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
+function ss(k,v){try{if(v===undefined)return sessionStorage.getItem(k);if(v===null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,v)}catch(e){return null}}
+const CODE_RE=/TNP-[A-Z0-9]{5}/i;
+
+const REASONS={
+  wrong:{e:'🅿️',en:'Wrong parking',hi:'गलत पार्किंग'},
+  blocking:{e:'🚧',en:'Blocking road / gate',hi:'रास्ता / गेट रोका है'},
+  lights:{e:'💡',en:'Lights left on',hi:'लाइट जली है'},
+  unlocked:{e:'🔓',en:'Unlocked / window open',hi:'गाड़ी खुली है'},
+  towing:{e:'🚛',en:'Being towed',hi:'टो हो रही है'},
+  lost:{e:'❓',en:'Lost / abandoned',hi:'लावारिस गाड़ी'},
+  hitrun:{e:'💥',en:'Hit and run',hi:'टक्कर मारकर भागा'},
+  fire:{e:'🔥',en:'Fire or threat',hi:'आग / खतरा',high:true},
+  accident:{e:'🚑',en:'Accident',hi:'दुर्घटना',high:true},
+  other:{e:'💬',en:'Something else',hi:'कुछ और'}
+};
+const PACKS=[
+  {id:'bike',name:'Bike tag',price:399,mrp:599,items:['1 QR decal for bike/scooter','Alerts and masked calls','5 emergency contacts','Document vault']},
+  {id:'car',name:'Car tag',price:499,mrp:799,items:['1 windscreen QR decal','Alerts and masked calls','5 emergency contacts','Document vault'],hot:true},
+  {id:'combo',name:'Car + Bike',price:799,mrp:1299,items:['1 car + 1 bike decal','Everything in Car tag','One account for both','Free tag replacement once']},
+  {id:'family',name:'Family pack',price:1499,mrp:2399,items:['4 decals, any mix','Everything in Combo','Share alerts with family','Priority support']}
+];
+
+/* ---------------- mode + API ---------------- */
+let MODE='local', HEALTH={demoOtp:true};
+let TOKEN=ls('tnp_token')||'', ATOKEN=ss('tnp_admin')||'';
+function fresh(){return{user:null,vehicles:[],alerts:[],contacts:[],docs:[],privacy:{allowCalls:true,chatOnly:false,quiet:true,quietFrom:'22:00',quietTo:'07:00',lang:'English'},share:null,orders:[],blocked:[],leads:[]}}
+let S=fresh();
+
+async function detectMode(){
+  if(!/^https?:/.test(location.protocol))return;
+  try{
+    const c=new AbortController();const t=setTimeout(()=>c.abort(),4000);
+    const r=await fetch('api/index.php?r=health',{cache:'no-store',signal:c.signal});clearTimeout(t);
+    if(r.status===503){MODE='setup';return}
+    const j=await r.json();if(j&&j.ok){MODE='remote';HEALTH=j}
+  }catch(e){}
+}
+async function api(method,route,body,params){
+  if(MODE!=='remote')return LOCAL.call(method,route,body||{},params||{});
+  let url='api/index.php?r='+encodeURIComponent(route);
+  if(params)for(const k in params)url+='&'+encodeURIComponent(k)+'='+encodeURIComponent(params[k]);
+  let res;
+  try{res=await fetch(url,{method,headers:{'Content-Type':'application/json','X-Token':TOKEN,'X-Admin':ATOKEN},body:body?JSON.stringify(body):undefined,cache:'no-store'})}
+  catch(e){throw new Error('No internet connection. Try again.')}
+  let j={};try{j=await res.json()}catch(e){}
+  if(!res.ok){const err=new Error(j.error||'Something went wrong. Try again.');err.status=res.status;throw err}
+  return j;
+}
+
+/* =====================================================================
+   DEMO MODE: the same API, kept in this browser (localStorage)
+   ===================================================================== */
+const LOCAL=(()=>{
+  const SK='tagnpark_v2',AK='tagnpark_admin_v2';
+  const DEMO_ADMINS=[
+    {id:1,email:'admin@tagnpark.in',pass:'Admin@123',name:'Pinky Martina',role:'Super Admin',active:true},
+    {id:2,email:'support@tagnpark.in',pass:'Support@123',name:'Support Desk',role:'Support',active:true},
+    {id:3,email:'inventory@tagnpark.in',pass:'Stock@123',name:'Inventory Team',role:'Inventory',active:true}
+  ];
+  const ROLE_PAGES={'Super Admin':['dash','tags','support','abuse','orders','leads','admins','audit'],'Support':['dash','support','abuse','orders','leads'],'Inventory':['dash','tags','orders']};
+  const ORDER_STAGES=['Confirmed','Packed','Shipped','Out for delivery','Delivered','Cancelled'];
+  const LEAD_STAGES=['New','Contacted','Proposal sent','Won','Lost'];
+  let st,ad;
+  function rcode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<5;i++)s+=c[Math.floor(Math.random()*32)];return'TNP-'+s}
+  function load(){try{st=JSON.parse(localStorage.getItem(SK))}catch(e){}if(!st)st={user:null,data:fresh()};try{ad=JSON.parse(localStorage.getItem(AK))}catch(e){}if(!ad)ad=seedAdmin()}
+  function save(){try{localStorage.setItem(SK,JSON.stringify(st));localStorage.setItem(AK,JSON.stringify(ad))}catch(e){}}
+  function seedAdmin(){
+    const tags=[],batches=[];
+    [['B-2026-001','Car',60,40],['B-2026-002','Bike',40,25],['B-2026-003','Car',30,6]].forEach(([id,type,n,age],bi)=>{
+      batches.push({id,type,count:n,created:now()-age*DAY,printed:bi<2});
+      for(let i=0;i<n;i++){const r=Math.random();const s=bi===2?(r<.7?'CREATED':'PRINTED'):r<.55?'ACTIVE':r<.75?'SOLD':r<.9?'PRINTED':r<.96?'SUSPENDED':'DEACTIVATED';tags.push({code:rcode(),batch:id,type,status:s})}
+    });
+    tags[0].code='TNP-7Q2X9';tags[0].status='SOLD';tags[1].code='TNP-NEWQK';tags[1].status='SOLD';
+    const owners=[['Rahul S.','9845012210',['KA-01-AB-1234']],['Meena K.','9810044321',['DL-03-SX-5521']],['Arjun P.','9920033187',['MH-12-QR-7788','MH-12-ZZ-1020']],['Fatima R.','9700021145',['TS-09-EK-4412']],['Green Woods RWA','9811077001',['HR-26-DX-3301']]].map((o,i)=>({id:100+i,name:o[0],phone:o[1],vehicles:o[2],tags:[tags[5+i*4].code],joined:now()-(38-i*7)*DAY}));
+    const alerts=[];const keys=Object.keys(REASONS);
+    for(let i=0;i<46;i++){const o=owners[i%5];const t=now()-Math.random()*7*DAY;const seen=Math.random()<.9;alerts.push({owner:o.id,reg:mask(o.vehicles[0]),reason:keys[Math.floor(Math.random()*8)],time:t,status:Math.random()<.03?'SPAM':seen?(Math.random()<.7?'RESOLVED':'SEEN'):'OPEN',seenIn:seen?Math.round(30+Math.random()*900):null})}
+    return{tags,batches,owners,alerts,abuse:[
+      {id:1,reporter:'91xxxxxx77',type:'Rate limit breach',detail:'More than 5 reports in 1 hour',tag:tags[9].code,time:now()-2*36e5},
+      {id:2,reporter:'88xxxxxx03',type:'Reported as spam',detail:'3 owners marked alerts as spam',tag:tags[14].code,time:now()-7*36e5}],
+      platform:[{id:1,label:'77xxxxxx19'}],
+      orders:[{id:'TNP482193',pack:'Car tag',qty:1,amount:499,pay:'UPI',name:'Rahul S.',phone:'98xxxxxx10',pin:'560038',time:now()-2*DAY,status:'Shipped'},{id:'TNP482201',pack:'Family pack',qty:1,amount:1499,pay:'Card',name:'Meena K.',phone:'98xxxxxx21',pin:'122002',time:now()-DAY,status:'Packed'}],
+      orderStatus:{},leadStatus:{},audit:[],session:null,admins:DEMO_ADMINS.map(a=>({...a}))};
+  }
+  function seedOwner(phone){
+    const d=fresh();d.user={phone,name:'',since:now()};
+    const v1={id:uid(),reg:'KA-01-AB-1234',type:'Car',make:'Hyundai',model:'Creta',colour:'White',tag:'TNP-7Q2X9',tagStatus:'ACTIVE'};
+    d.vehicles=[v1,{id:uid(),reg:'DL-03-SX-5521',type:'Bike',make:'Honda',model:'Activa',colour:'Grey',tag:null,tagStatus:null}];
+    d.alerts=[{id:uid(),vehicleId:v1.id,reason:'lights',note:'Headlights on since morning',time:now()-3*DAY,seenAt:now()-3*DAY+120000,status:'RESOLVED',severity:'NORMAL',reply:'Thank you',reporter:'98xxxxxx21',place:'Location shared by reporter',chat:[]}];
+    d.docs=[{id:uid(),vehicleId:v1.id,type:'Insurance',expiry:now()+20*DAY,file:'insurance_policy.pdf'},{id:uid(),vehicleId:v1.id,type:'PUC',expiry:now()+5*DAY,file:'puc.jpg'},{id:uid(),vehicleId:v1.id,type:'RC',expiry:now()+3200*DAY,file:'rc_card.jpg'}];
+    d.contacts=[{id:uid(),name:'Mom',phone:'98xxxxxx10',relation:'Mother',verified:true}];
+    const t=ad.tags.find(x=>x.code==='TNP-7Q2X9');if(t)t.status='ACTIVE';
+    return d;
+  }
+  const E=m=>{throw new Error(m)};
+  const D=()=>st.data;
+  const vById=id=>D().vehicles.find(v=>v.id===id)||E('Vehicle not found');
+  const aById=id=>D().alerts.find(a=>a.id===id)||E('Alert not found');
+  function tagByCode(c){return ad.tags.find(t=>t.code===c)}
+  function setTagStatus(code,status){const t=tagByCode(code);if(t)t.status=status}
+  function scanInfo(code){
+    if(!CODE_RE.test(code||''))return{status:'unknown'};
+    const t=tagByCode(code);if(!t)return{status:'unknown'};
+    const v=st.user&&D().vehicles.find(x=>x.tag===code);
+    if(['SUSPENDED','DEACTIVATED'].includes(t.status))return{status:'inactive',code};
+    if(!st.user&&code==='TNP-7Q2X9')return{status:'active',code,vehicle:{type:'Car',colour:'White',reg:'KA-01-**-1234'},allowCalls:true};
+    if(!v||t.status!=='ACTIVE')return{status:'unpaired',code};
+    return{status:'active',code,vehicle:{type:v.type,colour:v.colour,reg:mask(v.reg)},allowCalls:D().privacy.allowCalls&&!D().privacy.chatOnly};
+  }
+  function audit(action,entity){ad.audit.unshift({at:now(),actor:ad.session?ad.session.email:'system',action,entity:entity||''});ad.audit=ad.audit.slice(0,200)}
+  function adm(){if(!ad.session||ad.session.stage!=='full')E('Admin login required');return ad.session}
+  const ACTS={
+    'vehicle.add'(b){const raw=String(b.reg||'').toUpperCase().replace(/[^A-Z0-9]/g,'');const m=raw.match(/^([A-Z]{2})(\d{1,2})([A-Z]{0,3})(\d{1,4})$/);if(!m)E('Enter a valid number, e.g. DL-01-AB-1234');const reg=`${m[1]}-${m[2]}-${m[3]||'0'}-${m[4]}`;if(D().vehicles.some(v=>v.reg===reg))E('This vehicle is already in your account');const v={id:uid(),reg,type:b.type||'Car',make:b.make||'',model:b.model||'Vehicle',colour:b.colour||'',tag:null,tagStatus:null};D().vehicles.push(v);return{id:v.id}},
+    'vehicle.remove'(b){const v=vById(b.id);if(v.tag)setTagStatus(v.tag,'SOLD');st.data.vehicles=D().vehicles.filter(x=>x!==v);st.data.docs=D().docs.filter(d=>d.vehicleId!==v.id)},
+    'tag.activate'(b){const v=vById(b.vehicleId);const code=String(b.code||'').toUpperCase().trim();const t=tagByCode(code);if(!t)E('This code is not a TagNPark tag. Check the code under the QR.');if(t.status==='ACTIVE'&&D().vehicles.some(x=>x.tag===code))E('This tag is already linked to a vehicle.');if(['SUSPENDED','DEACTIVATED'].includes(t.status))E('This tag has been switched off. Contact support.');if(v.tag)setTagStatus(v.tag,'DEACTIVATED');t.status='ACTIVE';v.tag=code;v.tagStatus='ACTIVE'},
+    'tag.move'(b){const a=vById(b.from),c=vById(b.to);if(c.tag)setTagStatus(c.tag,'DEACTIVATED');c.tag=a.tag;c.tagStatus='ACTIVE';a.tag=null;a.tagStatus=null},
+    'tag.deactivate'(b){const v=vById(b.vehicleId);if(v.tag)setTagStatus(v.tag,'DEACTIVATED');v.tag=null;v.tagStatus=null},
+    'alert.seen'(b){const a=aById(b.id);if(a.status==='OPEN'){a.status='SEEN';a.seenAt=now()}},
+    'alert.reply'(b){const a=aById(b.id);if(b.quick)a.reply=b.text;if(a.status==='OPEN'){a.status='SEEN';a.seenAt=now()}a.chat.push({me:true,t:b.text})},
+    'alert.resolve'(b){const a=aById(b.id);a.status='RESOLVED';a.seenAt=a.seenAt||now()},
+    'alert.spam'(b){const a=aById(b.id);a.status='SPAM';if(!D().blocked.includes(a.reporter))D().blocked.push(a.reporter)},
+    'unblock'(b){st.data.blocked=D().blocked.filter(x=>x!==b.label)},
+    'share.start'(b){if(!(b.with||[]).length)E('Pick at least one contact');st.data.share={with:b.with,start:now(),until:now()+Math.max(30,Math.min(480,b.minutes||60))*6e4}},
+    'share.stop'(){st.data.share=null},
+    'contact.add'(b){if(D().contacts.length>=5)E('Maximum 5 contacts');if(!b.name||!/^[6-9]\d{9}$/.test(b.phone||''))E('Enter a name and valid mobile');D().contacts.push({id:uid(),name:b.name,phone:maskPhone(b.phone),relation:b.relation||'Family',verified:true})},
+    'contact.remove'(b){st.data.contacts=D().contacts.filter(c=>c.id!==b.id)},
+    'privacy.set'(b){const p=D().privacy;p[b.key]=b.value;if(b.key==='chatOnly'&&b.value)p.allowCalls=false;if(b.key==='allowCalls'&&b.value)p.chatOnly=false},
+    'profile.name'(b){D().user.name=b.name||''},
+    'doc.add'(b){vById(b.vehicleId);const e=new Date(b.expiry).getTime();if(!e)E('Add the expiry date');D().docs.push({id:uid(),vehicleId:b.vehicleId,type:b.type,expiry:e,file:b.fileName||'document',hasFile:!!b.data,data:b.data&&b.data.length<900000?b.data:null})},
+    'doc.remove'(b){st.data.docs=D().docs.filter(d=>d.id!==b.id)},
+    'account.delete'(){st={user:null,data:fresh()};return{deleted:true}}
+  };
+  function adminData(p,q){
+    const s=adm();if(p!=='codes'&&!ROLE_PAGES[s.role].includes(p==='user'?'support':p))E('Your role cannot open this');
+    const liveAlerts=st.user?D().alerts.map(a=>({owner:'me',reg:mask((D().vehicles.find(v=>v.id===a.vehicleId)||{reg:'KA-01-AB-1234'}).reg),reason:a.reason,time:a.time,status:a.status,seenIn:a.seenAt?(a.seenAt-a.time)/1000:null})):[];
+    const al=[...liveAlerts,...ad.alerts].sort((a,b)=>b.time-a.time);
+    const orders=[...(st.user?D().orders:[]).map(o=>({...o,name:'Website order',phone:st.user?maskPhone(st.user.phone):'',pin:'—'})),...ad.orders].map(o=>({...o,status:ad.orderStatus[o.id]||o.status})).sort((a,b)=>b.time-a.time);
+    if(p==='dash'){
+      const wk=al.filter(a=>now()-a.time<7*DAY),seen=wk.filter(a=>a.seenIn!=null),times=seen.map(a=>a.seenIn).sort((a,b)=>a-b);
+      const byReason={};wk.forEach(a=>byReason[a.reason]=(byReason[a.reason]||0)+1);
+      const days=[...Array(7)].map((_,i)=>{const d0=new Date();d0.setHours(0,0,0,0);const t=d0.getTime()-(6-i)*DAY;return{t,n:al.filter(a=>a.time>=t&&a.time<t+DAY).length}});
+      return{active:ad.tags.filter(t=>t.status==='ACTIVE').length,sold:ad.tags.filter(t=>['SOLD','ACTIVE','SUSPENDED','DEACTIVATED'].includes(t.status)).length,users:ad.owners.length+(st.user?1:0),week:wk.length,unread:al.filter(a=>a.status==='OPEN').length,
+        respRate:wk.length?Math.round(seen.filter(a=>a.seenIn<=900).length/wk.length*100):null,medianSeen:times.length?times[Math.floor(times.length/2)]:null,spamRate:wk.length?Math.round(wk.filter(a=>a.status==='SPAM').length/wk.length*100):null,
+        orders:orders.length,toDispatch:orders.filter(o=>!['Delivered','Cancelled'].includes(o.status)).length,days,byReason,latest:al.slice(0,8).map(a=>({reason:a.reason,status:a.status,time:a.time,reg:a.reg,seenIn:a.seenIn})),demoOtp:true};
+    }
+    if(p==='tags'){const f=q.status||'ALL',qq=(q.q||'').toUpperCase();const list=ad.tags.filter(t=>(f==='ALL'||t.status===f)&&(!qq||t.code.includes(qq)));const counts={ALL:ad.tags.length};ad.tags.forEach(t=>counts[t.status]=(counts[t.status]||0)+1);
+      return{counts,total:list.length,tags:list.slice(0,60),batches:ad.batches.slice().reverse().map(b=>({...b,active:ad.tags.filter(t=>t.batch===b.id&&t.status==='ACTIVE').length}))}}
+    if(p==='codes'){const b=ad.batches.find(x=>x.id===q.batch)||E('Batch not found');audit('Opened print file',b.id);return{batch:b.id,type:b.type,site:location.href.split('#')[0].replace(/index\.html$/,'').replace(/\/$/,''),codes:ad.tags.filter(t=>t.batch===b.id).map(t=>t.code)}}
+    const cards=()=>{const list=ad.owners.map(o=>({id:o.id,name:o.name,phone:maskPhone(o.phone),raw:o.phone,vehicles:o.vehicles.map(mask),rawV:o.vehicles,tags:o.tags,joined:o.joined}));if(st.user)list.unshift({id:'me',name:D().user.name||'App user',phone:maskPhone(st.user.phone),raw:st.user.phone,vehicles:D().vehicles.map(v=>mask(v.reg)),rawV:D().vehicles.map(v=>v.reg),tags:D().vehicles.filter(v=>v.tag).map(v=>v.tag),joined:D().user.since});return list};
+    if(p==='support'){const qq=String(q.q||'').toUpperCase().replace(/[^A-Z0-9]/g,'');if(qq.length<4)return{results:[]};audit('Searched user',qq.slice(0,4)+'…');
+      return{results:cards().filter(c=>c.raw===qq||c.rawV.some(r=>r.replace(/-/g,'')===qq)||c.tags.includes(String(q.q).toUpperCase())).map(({raw,rawV,...c})=>c)}}
+    if(p==='user'){const c=cards().find(x=>String(x.id)===String(q.id))||E('Not found');audit('Viewed user','U'+c.id);const{raw,rawV,...card}=c;card.alerts=(c.id==='me'?liveAlerts:ad.alerts.filter(a=>a.owner===c.id)).map(a=>({reason:a.reason,status:a.status,time:a.time,reg:a.reg}));return card}
+    if(p==='abuse'){const ob={};(st.user?D().blocked:[]).forEach(l=>ob[l]=(ob[l]||0)+1);return{open:ad.abuse.filter(a=>!a.done),platform:ad.platform,owner:Object.entries(ob).map(([label,n],i)=>({id:'o'+i,label,n}))}}
+    if(p==='orders')return{orders,stages:ORDER_STAGES};
+    if(p==='leads')return{leads:(st.data.leads||[]).map(l=>({...l,phone:maskPhone(l.phone),status:ad.leadStatus[l.id]||'New'})),stages:LEAD_STAGES};
+    if(p==='admins')return{admins:ad.admins.map(a=>({id:a.id,name:a.name,email:a.email,role:a.role,active:a.active,last:(ad.audit.find(x=>x.actor===a.email&&x.action==='Logged in')||{}).at||null})),roles:ROLE_PAGES,me:ad.admins.find(a=>a.email===s.email).id};
+    if(p==='audit')return{log:ad.audit};
+    E('Unknown page');
+  }
+  const ADM={
+    'batch.create'(b){const n=Math.max(1,Math.min(500,+b.count||0));const id='B-2026-'+String(ad.batches.length+1).padStart(3,'0');ad.batches.push({id,type:b.type,count:n,created:now(),printed:false});const have=new Set(ad.tags.map(t=>t.code));for(let i=0;i<n;i++){let c;do{c=rcode()}while(have.has(c));have.add(c);ad.tags.push({code:c,batch:id,type:b.type,status:'CREATED'})}audit(`Generated batch (${n} ${b.type} tags)`,id);return{id,count:n}},
+    'batch.printed'(b){ad.batches.find(x=>x.id===b.id).printed=true;ad.tags.forEach(t=>{if(t.batch===b.id&&t.status==='CREATED')t.status='PRINTED'});audit('Marked batch printed',b.id)},
+    'batch.sold'(b){ad.tags.forEach(t=>{if(t.batch===b.id&&['CREATED','PRINTED'].includes(t.status))t.status='SOLD'});audit('Marked batch sold',b.id)},
+    'tag.set'(b){const t=tagByCode(b.code)||E('Tag not found');t.status=b.status;if(st.user)D().vehicles.forEach(v=>{if(v.tag===b.code)v.tagStatus=b.status==='SUSPENDED'?'SUSPENDED':'ACTIVE'});audit(b.status==='SUSPENDED'?'Suspended tag':'Reactivated tag',b.code)},
+    'tag.reset'(b){setTagStatus(b.code,'SOLD');if(st.user)D().vehicles.forEach(v=>{if(v.tag===b.code){v.tag=null;v.tagStatus=null}});audit('Reset tag (unlinked from vehicle)',b.code)},
+    'abuse.block'(b){const a=ad.abuse.find(x=>x.id===b.id);a.done=true;if(!ad.platform.some(p=>p.label===a.reporter))ad.platform.push({id:now(),label:a.reporter});audit('Blocked reporter',a.reporter)},
+    'abuse.dismiss'(b){const a=ad.abuse.find(x=>x.id===b.id);a.done=true;audit('Dismissed abuse report',a.reporter)},
+    'block.platform'(b){const l=(adminData('abuse',{}).owner.find(o=>o.id===b.id)||{}).label;if(l&&!ad.platform.some(p=>p.label===l))ad.platform.push({id:now(),label:l});audit('Blocked on platform',l)},
+    'block.remove'(b){const p=ad.platform.find(x=>x.id===b.id);ad.platform=ad.platform.filter(x=>x.id!==b.id);audit('Unblocked',p&&p.label)},
+    'order.status'(b){ad.orderStatus[b.id]=b.status;if(st.user){const o=D().orders.find(x=>x.id===b.id);if(o)o.status=b.status}audit('Order status → '+b.status,b.id)},
+    'lead.status'(b){ad.leadStatus[b.id]=b.status;audit('Lead → '+b.status,b.id)},
+    'admin.create'(b){if(!/\S+@\S+\.\S+/.test(b.email||''))E('Enter a valid email');if(String(b.password||'').length<10)E('Password must be at least 10 characters');if(ad.admins.some(a=>a.email===b.email))E('This email already has an account');ad.admins.push({id:now(),name:b.name||b.email,email:b.email.toLowerCase(),pass:b.password,role:b.role,active:true});audit('Created admin ('+b.role+')',b.email);return{secret:'DEMOSECRETDEMOSECRET',uri:'otpauth://totp/TagNPark:'+encodeURIComponent(b.email)+'?secret=DEMOSECRETDEMOSECRET&issuer=TagNPark'}},
+    'admin.toggle'(b){const a=ad.admins.find(x=>x.id===b.id);if(a.email===ad.session.email)E('You cannot switch off your own account');a.active=!a.active;audit('Switched admin on/off','A'+a.id)},
+    'admin.password'(b){const a=ad.admins.find(x=>x.email===ad.session.email);if(a.pass!==b.current)E('Current password is wrong');if(String(b.password).length<10)E('Password must be at least 10 characters');a.pass=b.password;audit('Changed own password')}
+  };
+  async function call(m,r,b,q){
+    load();
+    try{
+      const res=route(m,r,b,q);save();return JSON.parse(JSON.stringify(res));
+    }finally{}
+  }
+  function route(m,r,b,q){
+    switch(m+' '+r){
+      case'GET health':return{ok:true,demoOtp:true,local:true};
+      case'POST auth/otp':if(!/^[6-9]\d{9}$/.test(b.phone||''))E('Enter a valid 10-digit mobile number');return{sent:true,demo:true};
+      case'POST auth/verify':if(b.otp!=='123456')E('Wrong OTP.');if(!st.user||st.user.phone!==b.phone){const keep=st.data.alerts.filter(a=>a.fromScan);st.user={phone:b.phone};st.data=seedOwner(b.phone);if(keep.length){keep.forEach(a=>a.vehicleId=st.data.vehicles[0].id);st.data.alerts=[...keep,...st.data.alerts]}}return{token:'demo'};
+      case'POST auth/logout':return{ok:true};
+      case'GET state':if(!st.user)E('Please log in again');return D();
+      case'POST act':{if(!st.user)E('Please log in again');const f=ACTS[b.action]||E('Unknown action');const x=f(b)||{};return{ok:true,...x,state:st.user?D():null}}
+      case'GET scan':return scanInfo(String(q.code||'').toUpperCase());
+      case'POST scan/otp':if(scanInfo(b.code).status!=='active')E('This tag is not active');if(!/^[6-9]\d{9}$/.test(b.phone||''))E('Enter a valid 10-digit mobile number');return{sent:true,demo:true};
+      case'POST scan/report':{
+        const info=scanInfo(b.code);if(info.status!=='active')E('This tag is not active');if(!REASONS[b.reason])E('Pick a reason');if(b.otp!=='123456')E('Wrong OTP.');
+        const lab=maskPhone(b.phone);if(D().blocked.includes(lab)||ad.platform.some(p=>p.label===lab))E('You cannot send alerts to this vehicle.');
+        if(D().alerts.filter(a=>a.reporterRaw===b.phone&&now()-a.time<36e5).length>=5)E('Too many reports from this number. Try later.');
+        const v=D().vehicles.find(x=>x.tag===b.code)||{id:'demo'};
+        const dup=D().alerts.find(a=>a.vehicleId===v.id&&a.reason===b.reason&&['OPEN','SEEN'].includes(a.status)&&now()-a.time<6e5);
+        const rt=uid()+uid();
+        if(dup){dup.rt=rt;return{id:dup.id,rt,merged:true}}
+        const a={id:uid(),vehicleId:v.id,reason:b.reason,note:b.note||'',photo:b.photo||null,time:now(),seenAt:null,status:'OPEN',severity:REASONS[b.reason].high?'HIGH':'NORMAL',reply:null,reporter:lab,reporterRaw:b.phone,place:b.lat?'Location shared by reporter':'Location not shared',chat:[],fromScan:true,rt};
+        D().alerts.unshift(a);return{id:a.id,rt};
+      }
+      case'GET incident':{const a=D().alerts.find(x=>x.id===q.id&&x.rt===q.rt)||E('Not found');return{status:a.status,time:a.time,seenAt:a.seenAt,reply:a.reply,reason:a.reason,severity:a.severity,chat:a.chat}}
+      case'POST incident/call':return{demo:true};
+      case'POST order':{const p=PACKS.find(x=>x.id===b.pack)||E('Pick a pack');if(!/^[6-9]\d{9}$/.test(b.phone||''))E('Enter a valid mobile number');const q2=Math.max(1,+b.qty||1);const o={id:'TNP'+Math.floor(100000+Math.random()*900000),pack:p.name,qty:q2,amount:p.price*q2,pay:'Pay on delivery',time:now(),status:'Confirmed'};st.data.orders.unshift(o);return{id:o.id,amount:o.amount,pay:o.pay}}
+      case'POST lead':{if(!/^[6-9]\d{9}$/.test(b.phone||''))E('Enter a valid mobile number');st.data.leads=st.data.leads||[];st.data.leads.unshift({id:uid(),time:now(),org:b.org,type:b.type,count:b.count,city:b.city,name:b.name,phone:b.phone});return{ok:true}}
+      case'POST admin/login':{const a=ad.admins.find(x=>x.email===String(b.email||'').toLowerCase()&&x.active);if(ad.lock&&ad.lock>now())E('Too many wrong attempts. Try again in '+Math.ceil((ad.lock-now())/6e4)+' min.');if(!a||a.pass!==b.password){ad.fails=(ad.fails||0)+1;if(ad.fails>=5){ad.lock=now()+3e5;ad.fails=0}save();E('Wrong email or password.')}ad.fails=0;ad.session={email:a.email,role:a.role,stage:'mfa'};return{token:'demo-admin',stage:'mfa'}}
+      case'POST admin/mfa':if(!ad.session)E('Admin login required');if(b.code!=='123456')E('Wrong code. Try again.');ad.session.stage='full';audit('Logged in');return{ok:true};
+      case'POST admin/logout':if(ad.session&&ad.session.stage==='full')audit('Logged out');ad.session=null;return{ok:true};
+      case'GET admin/me':{const s=adm();const a=ad.admins.find(x=>x.email===s.email);return{name:a.name,email:a.email,role:a.role,pages:ROLE_PAGES[a.role],demoOtp:true}}
+      case'GET admin/data':return adminData(q.page,q);
+      case'POST admin/act':{adm();const f=ADM[b.action]||E('Unknown action');return{ok:true,...(f(b)||{})}}
+    }
+    E('Unknown request');
+  }
+  function reset(){try{localStorage.removeItem(SK);localStorage.removeItem(AK)}catch(e){}}
+  function docData(id){load();const d=D().docs.find(x=>x.id===id);return d&&d.data}
+  return{call,reset,docData};
+})();
+
+/* =====================================================================
+   WEBSITE (pricing, order, leads) + ROUTING
+   ===================================================================== */
+const SITE_SECTIONS=['how','features','pricing','business','download'];
+function route(){
+  let h=location.hash.replace('#','');
+  const view=h==='app'?'app':/^scan/i.test(h)?'scan':h==='admin'?'admin':'site';
+  document.body.classList.toggle('admin',view==='admin');
+  document.body.classList.toggle('scanv',view==='scan');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('v-'+view).classList.add('on');
+  if(view==='site'){if(SITE_SECTIONS.includes(h)){const el=document.getElementById(h);if(el)setTimeout(()=>el.scrollIntoView(),0)}else window.scrollTo(0,0)}
+  else window.scrollTo(0,0);
+  if(view==='app')enterApp();
+  if(view==='scan'){const m=h.match(CODE_RE);openScan(m?m[0].toUpperCase():null)}
+  if(view==='admin')enterAdmin();
+}
+window.addEventListener('hashchange',route);
+
+function qrSVG(text,dark='#0E1A2B'){
+  try{const q=qrcode(0,'M');q.addData(text);q.make();const n=q.getModuleCount();let r='';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(q.isDark(y,x))r+=`M${x} ${y}h1v1h-1z`;
+    return`<svg viewBox="-2 -2 ${n+4} ${n+4}" width="100%" shape-rendering="crispEdges"><rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="#fff"/><path d="${r}" fill="${dark}"/></svg>`}
+  catch(e){return`<div style="aspect-ratio:1;display:grid;place-items:center;font-size:12px;border:1px dashed #ccc">QR</div>`}
+}
+function siteBase(){return location.href.split('#')[0].replace(/index\.html$/,'').replace(/\/$/,'')}
+
+function renderPrices(){
+  document.getElementById('priceGrid').innerHTML=PACKS.map(p=>`
+    <div class="price ${p.hot?'hot':''}">
+      <h3>${p.name}</h3>
+      <div class="amt">₹${p.price}<s>₹${p.mrp}</s></div>
+      <div class="once">one-time · incl. GST · lifetime validity</div>
+      <ul>${p.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      <button class="btn ${p.hot?'btn-amber':'btn-ink'} btn-block" onclick="openModal('buy','${p.id}')">Buy now</button>
+    </div>`).join('');
+}
+function openModal(kind,arg){
+  const b=document.getElementById('modalBox');
+  if(kind==='buy'){
+    const p=PACKS.find(x=>x.id===arg);
+    b.innerHTML=`<h3>${p.name} · ₹${p.price}</h3><p class="muted">One-time payment. Free delivery in 4–6 days.</p>
+      <form onsubmit="placeOrder(event,'${p.id}')">
+      <div class="row2"><div class="field"><label>Full name</label><input required name="name" maxlength="80"></div><div class="field"><label>Mobile</label><input required name="phone" inputmode="numeric" pattern="[6-9][0-9]{9}" title="10-digit Indian mobile" value="${esc(S.user?S.user.phone:'')}"></div></div>
+      <div class="field"><label>Email (for GST invoice)</label><input type="email" required name="email"></div>
+      <div class="field"><label>Delivery address</label><textarea rows="2" required name="address" maxlength="400"></textarea></div>
+      <div class="row2"><div class="field"><label>PIN code</label><input required name="pin" pattern="[0-9]{6}" title="6-digit PIN"></div><div class="field"><label>Quantity</label><select name="qty"><option>1</option><option>2</option><option>3</option><option>5</option></select></div></div>
+      <div class="banner t-amber" style="margin-top:14px">💵 <span>Pay on delivery for now. Online payment (UPI, cards) is coming soon.</span></div>
+      <button class="btn btn-amber btn-block" style="margin-top:8px" id="orderBtn">Place order · ₹${p.price}</button></form>`;
+  }else if(kind==='b2b'){
+    b.innerHTML=`<h3>Bulk pricing</h3><p class="muted">Tell us about your premises or fleet and we'll call you within one working day.</p>
+      <form onsubmit="saveLead(event)">
+      <div class="field"><label>Organisation</label><input required name="org" maxlength="120"></div>
+      <div class="field"><label>Type</label><select name="type"><option>Housing society</option><option>Office / tech park</option><option>Hotel / mall</option><option>Fleet / school transport</option><option>Parking operator</option></select></div>
+      <div class="row2"><div class="field"><label>Vehicles (approx.)</label><input type="number" min="10" required name="count"></div><div class="field"><label>City</label><input required name="city" maxlength="60"></div></div>
+      <div class="row2"><div class="field"><label>Your name</label><input required name="name" maxlength="80"></div><div class="field"><label>Mobile</label><input required pattern="[6-9][0-9]{9}" name="phone"></div></div>
+      <button class="btn btn-ink btn-block" style="margin-top:20px">Request a call</button></form>`;
+  }
+  document.getElementById('modal').classList.add('on');
+}
+function closeModal(){document.getElementById('modal').classList.remove('on')}
+async function placeOrder(e,id){
+  e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const btn=document.getElementById('orderBtn');btn.disabled=true;btn.textContent='Placing order…';
+  try{
+    const o=await api('POST','order',{pack:id,...f});
+    document.getElementById('modalBox').innerHTML=`<div style="text-align:center"><div style="font-size:48px">✅</div><h3>Order placed</h3>
+      <p class="muted">Order ${esc(o.id)} · ₹${o.amount} · ${esc(o.pay)}<br>We'll send updates to ${esc(f.email)}</p>
+      <div style="background:var(--amber2);border-radius:14px;padding:14px;margin:18px 0;font-size:14px">When your tag arrives, scan it with your phone camera and follow the steps to link it to your vehicle.</div>
+      <a href="#app" class="btn btn-ink btn-block" onclick="closeModal()">Open the app</a></div>`;
+    if(TOKEN)refreshState();
+  }catch(err){toast(err.message);btn.disabled=false;btn.textContent='Try again'}
+}
+async function saveLead(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));try{await api('POST','lead',f);closeModal();toast('Thanks! Our team will call you soon.')}catch(err){toast(err.message)}}
+function storeSoon(s){toast(s+' listing goes live at launch. Use the web app for now.')}
+
+/* =====================================================================
+   OWNER APP
+   ===================================================================== */
+let A={screen:'login',param:null,otpSent:false,phone:'',tab:'home',busy:false,loaded:false};
+let lastOpen=-1;
+const ICON={home:'<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',bell:'<path d="M6 16V11a6 6 0 1112 0v5l2 2H4zM10 21h4"/>',pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',doc:'<path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'};
+const svgI=(k,c='#8A93A3')=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
+
+async function refreshState(){
+  if(!TOKEN)return;
+  try{S=await api('GET','state');A.loaded=true;notifyNew()}
+  catch(e){if(e.status===401||/log in/i.test(e.message)){TOKEN='';ls('tnp_token',null);S=fresh();A.screen='login'}}
+}
+function notifyNew(){
+  const open=S.alerts.filter(a=>a.status==='OPEN');
+  if(lastOpen>=0&&open.length>lastOpen){const a=open[0];toast('🔔 New alert: '+REASONS[a.reason].en);
+    try{if('Notification' in window&&Notification.permission==='granted')new Notification('TagNPark: '+REASONS[a.reason].en,{body:'Tap to respond',icon:'icon-192.png'})}catch(e){}}
+  lastOpen=open.length;
+}
+async function enterApp(){
+  if(TOKEN&&!A.loaded){document.getElementById('screen').innerHTML='<div class="empty" style="padding-top:200px">Loading…</div>';await refreshState()}
+  if(TOKEN&&A.screen==='login')A.screen='home';
+  const pend=ls('tnp_pending_tag');
+  if(TOKEN&&pend&&!['addVehicle','activate'].includes(A.screen)){A.screen=S.vehicles.some(v=>!v.tag)?'pickForTag':'addVehicle'}
+  renderApp();
+}
+setInterval(async()=>{if(document.getElementById('v-app').classList.contains('on')&&TOKEN&&!A.busy&&!document.querySelector('.ascr input:focus,.ascr textarea:focus')){await refreshState();renderApp()}},15000);
+
+async function act(name,payload,okMsg){
+  if(A.busy)return null;A.busy=true;
+  try{const r=await api('POST','act',{...(payload||{}),action:name});if(r.state)S=r.state;if(okMsg)toast(okMsg);return r}
+  catch(e){toast(e.message);if(e.status===401){TOKEN='';ls('tnp_token',null);A.screen='login'}return null}
+  finally{A.busy=false;renderApp()}
+}
+function appGo(screen,param){A.screen=screen;A.param=param??null;if(['home','alerts','track','vault','profile'].includes(screen))A.tab=screen;renderApp();const s=document.querySelector('.ascr');if(s)s.scrollTop=0}
+
+function renderApp(){
+  const el=document.getElementById('screen');
+  if(!TOKEN)A.screen='login';
+  if(TOKEN&&A.screen==='login')A.screen='home';
+  const unread=S.alerts.filter(a=>a.status==='OPEN').length;
+  const live=S.share&&S.share.until>now();
+  const t=new Date();const clock=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0');
+  let body;try{body=SCREENS[A.screen]()}catch(e){console.error(e);A.screen='home';body=SCREENS.home()}
+  el.innerHTML=`<div class="sbar"><span>${clock}</span><span>${MODE==='remote'?'● Live':'Demo'}</span></div>
+    ${live?`<div class="livebar"><span class="pulse"></span>Sharing live location · ${Math.ceil((S.share.until-now())/60000)} min left</div>`:''}
+    <div class="ascr">${body}</div>
+    ${TOKEN?`<nav class="tabs">${[['home','Home','home'],['alerts','Alerts','bell'],['track','Track','pin'],['vault','Vault','doc'],['profile','Profile','user']].map(([k,l,i])=>`<button class="${A.tab===k?'on':''}" onclick="appGo('${k}')">${svgI(i,A.tab===k?'#0E1A2B':'#8A93A3')}${l}${k==='alerts'&&unread?`<span class="dot">${unread}</span>`:''}</button>`).join('')}</nav>`:''}`;
+}
+function vName(id){const v=S.vehicles.find(x=>x.id===id);return v?v.make+' '+v.model:''}
+function cName(id){const c=S.contacts.find(x=>String(x.id)===String(id));return c?c.name:'Contact'}
+function daysLeft(d){return Math.ceil((d.expiry-now())/DAY)}
+function statusTag(s){return{OPEN:'<span class="tag t-red">New</span>',SEEN:'<span class="tag t-blue">Seen</span>',RESOLVED:'<span class="tag t-green">Resolved</span>',SPAM:'<span class="tag t-grey">Spam</span>'}[s]||''}
+function alertRow(a){const R=REASONS[a.reason];return`<button class="list-i" style="width:100%;text-align:left" onclick="appGo('alert','${a.id}')"><span style="font-size:22px">${R.e}</span><div class="grow"><b style="font-size:14px">${R.en}</b><div class="muted">${esc(vName(a.vehicleId))} · ${ago(a.time)}</div></div>${statusTag(a.status)}</button>`}
+function mapSVG(live){return`<svg viewBox="0 0 340 170" preserveAspectRatio="xMidYMid slice" width="100%" height="100%"><rect width="340" height="170" fill="#E8EEE4"/><path d="M0 60h340M0 120h340M90 0v170M230 0v170" stroke="#fff" stroke-width="14"/><path d="M0 60h340M90 0v170" stroke="#FFE08A" stroke-width="4"/><rect x="110" y="78" width="100" height="30" rx="4" fill="#D7E3CF"/><rect x="250" y="10" width="70" height="36" rx="4" fill="#D7E3CF"/>${live?'<circle cx="160" cy="60" r="22" fill="#15803D" opacity=".18"><animate attributeName="r" values="10;26;10" dur="2s" repeatCount="indefinite"/></circle><circle cx="160" cy="60" r="8" fill="#15803D" stroke="#fff" stroke-width="3"/>':'<path d="M160 30c-11 0-19 8-19 18 0 14 19 32 19 32s19-18 19-32c0-10-8-18-19-18z" fill="#DC2626"/><circle cx="160" cy="48" r="6" fill="#fff"/>'}</svg>`}
+function mapBlock(a){if(a.lat&&a.lng)return`<a href="https://www.google.com/maps?q=${+a.lat},${+a.lng}" target="_blank" rel="noopener" style="display:block;position:relative" class="map">${mapSVG()}<span class="tag t-blue" style="position:absolute;left:10px;bottom:10px">Open in Google Maps ↗</span></a>`;return`<div class="map">${mapSVG()}</div>`}
+
+const SCREENS={
+login(){
+  const hint=HEALTH.demoOtp?`<div class="banner t-amber" style="margin-top:16px">${MODE==='remote'?'Test mode: SMS not connected yet. OTP is':'Demo OTP:'} <b>123456</b></div>`:'';
+  if(!A.otpSent)return`
+    <div style="padding-top:40px">
+      <div class="vic" style="width:64px;height:64px;border-radius:18px;background:var(--amber);font-size:28px">🅿️</div>
+      <h3 style="font-size:28px;font-weight:800;margin:18px 0 6px">Welcome to TagNPark</h3>
+      <p class="muted" style="font-size:15px">Log in with your mobile number. We'll send a one-time password.</p>
+      ${ls('tnp_pending_tag')?`<div class="banner t-blue" style="margin-top:14px">🏷️ <span>Log in to link tag <b>${esc(ls('tnp_pending_tag'))}</b> to your vehicle.</span></div>`:''}
+      <label class="alab" style="margin-top:24px">Mobile number</label>
+      <div style="display:flex;gap:8px"><div class="ain" style="width:70px;text-align:center;font-weight:600">+91</div><input id="ph" class="ain" inputmode="numeric" maxlength="10" placeholder="98765 43210" value="${esc(A.phone)}" onkeydown="if(event.key==='Enter')sendOtp()"></div>
+      <button class="btn btn-ink btn-block" style="margin-top:18px" onclick="sendOtp()">Get OTP</button>
+      <p class="muted" style="margin-top:16px;text-align:center">By continuing you agree to the Terms and Privacy Policy.</p>
+    </div>`;
+  return`
+    <div style="padding-top:40px">
+      <button class="back" onclick="A.otpSent=false;renderApp()">← Change number</button>
+      <h3 style="font-size:26px;font-weight:800;margin:10px 0 6px">Enter OTP</h3>
+      <p class="muted" style="font-size:15px">Sent to +91 ${esc(A.phone)}. Valid for 5 minutes.</p>
+      ${hint}
+      <div class="otpbox" style="margin-top:12px">${[0,1,2,3,4,5].map(i=>`<input maxlength="1" inputmode="numeric" autocomplete="${i?'off':'one-time-code'}" data-o="${i}" oninput="otpMove(this)">`).join('')}</div>
+      <button class="btn btn-ink btn-block" style="margin-top:20px" onclick="verifyOtp()">Verify and continue</button>
+    </div>`;
+},
+home(){
+  const open=S.alerts.filter(a=>a.status==='OPEN');
+  const soon=S.docs.filter(d=>d.expiry-now()<30*DAY&&d.expiry>now()).sort((a,b)=>a.expiry-b.expiry);
+  const notifOff='Notification' in window&&Notification.permission==='default';
+  return`
+  <div class="ah"><div><div class="muted">Namaste${S.user&&S.user.name?', '+esc(S.user.name):''} 👋</div><h3>Your vehicles</h3></div>
+    <button class="btn btn-amber btn-sm" onclick="appGo('addVehicle')">+ Add</button></div>
+  ${open.length?`<button class="banner t-red" style="width:100%;text-align:left" onclick="appGo('alert','${open[0].id}')">🔔 <span><b>${open.length} new alert${open.length>1?'s':''}</b><br>${REASONS[open[0].reason].en} · ${ago(open[0].time)}. Tap to respond.</span></button>`:''}
+  ${notifOff?`<button class="banner t-blue" style="width:100%;text-align:left" onclick="askNotif()">🔔 <span><b>Turn on alerts on this phone</b><br>Get a pop-up when someone scans your tag.</span></button>`:''}
+  ${S.vehicles.map(v=>`
+    <button class="acard" style="width:100%;text-align:left" onclick="appGo('vehicle','${v.id}')"><div class="vrow">
+      <div class="vic">${v.type==='Bike'?'🛵':'🚗'}</div>
+      <div style="flex:1"><h4>${esc(v.make)} ${esc(v.model)}</h4><div class="muted">${esc(v.reg)}${v.colour?' · '+esc(v.colour):''}</div></div>
+      ${v.tagStatus==='ACTIVE'?'<span class="tag t-green">● Tag active</span>':v.tagStatus==='SUSPENDED'?'<span class="tag t-red">Suspended</span>':'<span class="tag t-amber">No tag</span>'}
+    </div></button>`).join('')||'<div class="acard empty">No vehicles yet. Tap <b>+ Add</b> to add your car or bike.</div>'}
+  <button class="sos" onclick="appGo('sos')"><div class="ring">SOS</div><div><b style="font-size:16px">Emergency SOS</b><br><span style="font-size:13px;opacity:.9">Send live location to ${S.contacts.length} contact${S.contacts.length===1?'':'s'}</span></div></button>
+  <div class="grid2">
+    <button class="qa" onclick="appGo('track')">📍<b>Track me</b><span>${S.share?'Sharing now':'Share live location'}</span></button>
+    <button class="qa" onclick="appGo('vault')">📄<b>Vault</b><span>${S.docs.length} documents</span></button>
+    <button class="qa" onclick="appGo('scanTag')">📷<b>Scan a tag</b><span>Link a new sticker</span></button>
+    <button class="qa" onclick="appGo('store')">🛒<b>Store</b><span>${S.orders.length?S.orders.length+' order(s)':'Buy tags'}</span></button>
+  </div>
+  ${soon.length?`<div class="acard"><h4>Coming up</h4>${soon.map(d=>`<div class="list-i"><span>📄</span><div class="grow"><b style="font-size:14px">${esc(d.type)}</b><div class="muted">${esc(vName(d.vehicleId))}</div></div><span class="tag ${daysLeft(d)<=7?'t-red':'t-amber'}">${daysLeft(d)} days</span></div>`).join('')}</div>`:''}
+  ${S.vehicles.some(v=>v.tagStatus==='ACTIVE')?`<div class="acard" style="background:var(--ink);color:#fff;border:0"><h4>Test your tag</h4><p style="font-size:13px;opacity:.8;margin:4px 0 12px">Open the page a stranger sees when they scan your sticker.</p><a href="#scan-${esc(S.vehicles.find(v=>v.tagStatus==='ACTIVE').tag)}" class="btn btn-amber btn-sm">Open scan page</a></div>`:''}`;
+},
+vehicle(){
+  const v=S.vehicles.find(x=>x.id===A.param);if(!v)return SCREENS.home();
+  const al=S.alerts.filter(a=>a.vehicleId===v.id);
+  return`<button class="back" onclick="appGo('home')">← Back</button>
+  <div class="acard" style="text-align:center;padding:22px">
+    <div style="font-size:42px">${v.type==='Bike'?'🛵':'🚗'}</div>
+    <h3 style="font-size:20px;margin:6px 0">${esc(v.make)} ${esc(v.model)}</h3>
+    <div class="plate" style="font-size:18px"><small>IND</small>${esc(v.reg)}</div>
+    <div class="muted" style="margin-top:8px">${esc(v.colour)} ${esc(v.type)}</div>
+  </div>
+  <div class="acard">
+    <h4>QR tag</h4>
+    ${v.tagStatus==='ACTIVE'?`<div class="list-i"><div style="width:72px">${qrSVG(siteBase()+'/?t='+v.tag)}</div><div class="grow"><b>${esc(v.tag)}</b><div class="muted">Active · scans show ${esc(mask(v.reg))}</div></div></div>
+      <div class="grid2" style="margin:8px 0 0"><button class="btn btn-ghost btn-sm" onclick="appGo('moveTag','${v.id}')">Move tag</button><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="act('tag.deactivate',{vehicleId:'${v.id}'},'Tag switched off. Scans will no longer reach you.')">Switch off</button></div>`
+     :v.tagStatus==='SUSPENDED'?`<p class="muted" style="margin-top:6px">Tag ${esc(v.tag)} was suspended by TagNPark support. Contact support@tagnpark.in.</p>`
+     :`<p class="muted" style="margin:6px 0 12px">No tag linked yet.</p><button class="btn btn-ink btn-sm btn-block" onclick="appGo('activate','${v.id}')">Link a tag</button>`}
+  </div>
+  <div class="acard"><h4>Alerts for this vehicle</h4>${al.length?al.map(alertRow).join(''):'<p class="muted">No alerts yet.</p>'}</div>
+  <button class="btn btn-ghost btn-sm btn-block" style="color:var(--red)" onclick="confirmBox('Remove ${esc(v.reg)}? Its tag and documents will be removed too.','Remove',()=>act('vehicle.remove',{id:'${v.id}'},'Vehicle removed').then(r=>r&&appGo('home')))">Remove vehicle</button>`;
+},
+addVehicle(){const pend=ls('tnp_pending_tag');return`<button class="back" onclick="ls('tnp_pending_tag',null);appGo('home')">← Back</button>
+  <div class="ah"><h3>Add a vehicle</h3></div>
+  ${pend?`<div class="banner t-blue">🏷️ <span>After saving, tag <b>${esc(pend)}</b> will be linked to this vehicle.</span></div>`:''}
+  <label class="alab">Type</label><div class="chips" id="vtype">${['Car','Bike','Auto','Truck'].map((t,i)=>`<button class="chip ${i===0?'on':''}" onclick="pickChip(this)">${t}</button>`).join('')}</div>
+  <label class="alab">Registration number</label><input id="vreg" class="ain" placeholder="DL-01-AB-1234" style="text-transform:uppercase" maxlength="16">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label class="alab">Make</label><input id="vmake" class="ain" placeholder="Maruti" maxlength="40"></div><div><label class="alab">Model</label><input id="vmodel" class="ain" placeholder="Swift" maxlength="40"></div></div>
+  <label class="alab">Colour</label><input id="vcol" class="ain" placeholder="Red" maxlength="30">
+  <button class="btn btn-ink btn-block" style="margin-top:20px" onclick="addVehicle()">${pend?'Save and link tag':'Save and link a tag'}</button>`},
+pickForTag(){const pend=ls('tnp_pending_tag');const free=S.vehicles.filter(v=>!v.tag);return`<div class="ah"><h3>Link tag ${esc(pend)}</h3></div>
+  <p class="muted" style="margin-bottom:12px">Which vehicle is this sticker for?</p>
+  ${free.map(v=>`<button class="acard" style="width:100%;text-align:left" onclick="linkTag('${v.id}','${esc(pend)}')"><div class="vrow"><div class="vic">${v.type==='Bike'?'🛵':'🚗'}</div><div><h4>${esc(v.make)} ${esc(v.model)}</h4><div class="muted">${esc(v.reg)}</div></div></div></button>`).join('')}
+  <button class="btn btn-ghost btn-block" onclick="appGo('addVehicle')">+ A different vehicle</button>
+  <button class="btn btn-ghost btn-sm btn-block" style="margin-top:8px" onclick="ls('tnp_pending_tag',null);appGo('home')">Cancel</button>`},
+activate(){
+  const v=S.vehicles.find(x=>x.id===A.param);if(!v)return SCREENS.home();
+  return`<button class="back" onclick="appGo('vehicle','${v.id}')">← Back</button>
+  <div class="ah"><h3>Link a tag</h3></div>
+  <p class="muted" style="margin-bottom:14px">For ${esc(v.make)} ${esc(v.model)} · ${esc(v.reg)}</p>
+  ${scannerBlock()}
+  <label class="alab">Or type the code printed under the QR</label><input id="tcode" class="ain" placeholder="TNP-XXXXX" style="text-transform:uppercase" maxlength="9">
+  <button class="btn btn-ink btn-block" style="margin-top:18px" onclick="linkTag('${v.id}',document.getElementById('tcode').value)">Link tag to vehicle</button>`;
+},
+scanTag(){return`<button class="back" onclick="stopCam();appGo('home')">← Back</button><div class="ah"><h3>Scan a tag</h3></div>
+  <p class="muted" style="margin-bottom:14px">Scan a new TagNPark sticker to link it to one of your vehicles.</p>
+  ${scannerBlock()}
+  <label class="alab">Or type the code printed under the QR</label><input id="tcode" class="ain" placeholder="TNP-XXXXX" style="text-transform:uppercase" maxlength="9">
+  <button class="btn btn-ink btn-block" style="margin-top:18px" onclick="gotCode(document.getElementById('tcode').value)">Continue</button>`},
+moveTag(){
+  const v=S.vehicles.find(x=>x.id===A.param);const others=S.vehicles.filter(x=>x.id!==v.id);
+  return`<button class="back" onclick="appGo('vehicle','${v.id}')">← Back</button><div class="ah"><h3>Move tag ${esc(v.tag)}</h3></div>
+  ${others.length?others.map(o=>`<button class="acard" style="width:100%;text-align:left" onclick="act('tag.move',{from:'${v.id}',to:'${o.id}'},'Tag moved').then(r=>r&&appGo('vehicle','${o.id}'))"><div class="vrow"><div class="vic">${o.type==='Bike'?'🛵':'🚗'}</div><div><h4>${esc(o.make)} ${esc(o.model)}</h4><div class="muted">${esc(o.reg)}${o.tag?' · has a tag (will be switched off)':''}</div></div></div></button>`).join(''):'<p class="muted">Add another vehicle first.</p>'}`;
+},
+alerts(){
+  const list=[...S.alerts].sort((a,b)=>b.time-a.time);const f=A.param||'all';
+  const shown=list.filter(a=>f==='all'||(f==='open'?a.status==='OPEN':a.vehicleId===f));
+  return`<div class="ah"><h3>Alerts</h3></div>
+  <div class="chips" style="margin-bottom:14px"><button class="chip ${f==='all'?'on':''}" onclick="appGo('alerts','all')">All</button><button class="chip ${f==='open'?'on':''}" onclick="appGo('alerts','open')">New</button>${S.vehicles.map(v=>`<button class="chip ${f===v.id?'on':''}" onclick="appGo('alerts','${v.id}')">${esc(v.model)}</button>`).join('')}</div>
+  <div class="acard">${shown.length?shown.map(alertRow).join(''):'<div class="empty">No alerts here.</div>'}</div>`;
+},
+alert(){
+  const a=S.alerts.find(x=>x.id===A.param);if(!a)return SCREENS.alerts();
+  if(a.status==='OPEN'&&!A.busy){setTimeout(()=>act('alert.seen',{id:a.id}),0)}
+  const R=REASONS[a.reason];const v=S.vehicles.find(x=>x.id===a.vehicleId);
+  const chatOpen=now()-a.time<DAY&&a.status!=='SPAM';
+  return`<button class="back" onclick="appGo('alerts')">← Alerts</button>
+  ${a.severity==='HIGH'?`<div class="banner t-red">⚠️ <span><b>High priority.</b> Your emergency contacts are being told too.</span></div>`:''}
+  <div class="acard">
+    <div class="vrow"><div class="vic" style="font-size:22px">${R.e}</div><div style="flex:1"><h4>${R.en}</h4><div class="muted">${v?esc(v.make+' '+v.model+' · '+v.reg):'Vehicle'} · ${ago(a.time)}</div></div>${statusTag(a.status)}</div>
+    ${a.note?`<p style="margin-top:12px;font-size:14.5px">"${esc(a.note)}"</p>`:''}
+    ${a.photo?`<img class="photo-prev" src="${esc(a.photo)}" alt="Photo from reporter">`:''}
+    <div style="margin-top:12px">${mapBlock(a)}</div>
+    <div class="muted" style="margin-top:6px">📍 ${esc(a.place||'')} · Reporter ${esc(a.reporter)}</div>
+  </div>
+  ${a.status==='SPAM'?'<div class="banner t-grey">Marked as spam. The reporter was blocked.</div>':`
+  <div class="acard"><h4>Quick reply</h4><div class="chips" style="margin-top:10px">${['Coming in 5 min','Thank you','Moving it now','Not my vehicle'].map(q=>`<button class="chip ${a.reply===q?'on':''}" onclick="act('alert.reply',{id:'${a.id}',text:'${q}',quick:true},'Sent: ${q}')">${q}</button>`).join('')}</div></div>
+  <div class="grid2"><button class="btn btn-green" onclick="ownerCall('${a.id}')">📞 Call (masked)</button><button class="btn btn-ghost" onclick="act('alert.resolve',{id:'${a.id}'},'Marked as resolved').then(r=>r&&appGo('alerts'))">✓ Resolved</button></div>
+  ${chatOpen?`<div class="acard"><h4>Chat <span class="muted" style="font-weight:400">· closes in ${Math.max(1,Math.ceil((DAY-(now()-a.time))/36e5))} hr</span></h4>
+    <div class="chat">${(a.chat||[]).map(m=>`<div class="msg ${m.me?'me':'them'}">${esc(m.t)}</div>`).join('')||'<p class="muted">No messages yet.</p>'}</div>
+    <div style="display:flex;gap:8px"><input id="chatIn" class="ain" placeholder="Type a message" maxlength="300" onkeydown="if(event.key==='Enter')sendChat('${a.id}')"><button class="btn btn-ink btn-sm" onclick="sendChat('${a.id}')">Send</button></div></div>`:''}
+  <button class="btn btn-ghost btn-sm btn-block" style="color:var(--red)" onclick="act('alert.spam',{id:'${a.id}'},'Reporter blocked')">Mark as spam and block reporter</button>`}`;
+},
+call(){return`<div style="text-align:center;padding-top:60px">
+    <div class="muted">Calling through TagNPark (demo)</div>
+    <div style="width:110px;height:110px;border-radius:50%;background:var(--green2);margin:26px auto;display:grid;place-items:center;font-size:44px;animation:p2 1.5s infinite">📞</div>
+    <h3 style="font-size:24px">Reporter</h3>
+    <div class="banner t-blue" style="margin:26px 0;text-align:left">🔒 <span>Neither of you sees the other's real number. This link expires in 30 minutes.</span></div>
+    <button class="btn btn-red" style="width:72px;height:72px;border-radius:50%;font-size:26px" onclick="appGo('alert','${A.param}');toast('Call ended')">✕</button></div>`},
+track(){
+  const live=S.share&&S.share.until>now();
+  if(live)return`<div class="ah"><h3>Track me</h3></div>
+    <div class="map" style="height:240px">${mapSVG(true)}</div>
+    <div class="acard" style="margin-top:12px"><div class="vrow"><div class="vic" style="background:var(--green2)">📍</div><div style="flex:1"><h4>Sharing live location</h4><div class="muted">With ${S.share.with.map(id=>esc(cName(id))).join(', ')} · until ${new Date(S.share.until).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div></div></div></div>
+    <button class="btn btn-red btn-block" onclick="act('share.stop',{},'Sharing stopped')">Stop sharing now</button>`;
+  return`<div class="ah"><h3>Track me</h3></div>
+    <p class="muted" style="margin-bottom:14px">Share your live location with family for a set time.</p>
+    <label class="alab">Share with</label>
+    ${S.contacts.length?`<div class="acard" style="padding:6px 14px">${S.contacts.map(c=>`<label class="list-i" style="cursor:pointer"><input type="checkbox" class="shw" value="${esc(c.id)}" checked style="width:18px;height:18px"><div class="grow"><b style="font-size:14px">${esc(c.name)}</b><div class="muted">${esc(c.relation)}</div></div></label>`).join('')}</div>`:`<div class="acard muted">Add an emergency contact first. <button class="btn btn-ink btn-sm" style="margin-top:8px" onclick="appGo('contacts')">Add contact</button></div>`}
+    <label class="alab">For how long</label>
+    <div class="chips" id="dur">${[['30 min',30],['1 hr',60],['2 hr',120],['4 hr',240],['8 hr',480]].map(([l,m],i)=>`<button class="chip ${i===1?'on':''}" data-m="${m}" onclick="pickChip(this)">${l}</button>`).join('')}</div>
+    <div class="banner t-blue" style="margin-top:16px">🔒 <span>You can stop sharing at any time. A green bar stays on screen while sharing is on.</span></div>
+    <button class="btn btn-ink btn-block" onclick="startShare()" ${S.contacts.length?'':'disabled style="opacity:.5"'}>Start sharing</button>`;
+},
+sos(){return`<button class="back" onclick="appGo('home')">← Back</button>
+  <div style="text-align:center;padding:20px 0">
+    <button id="sosBtn" style="width:180px;height:180px;border-radius:50%;background:var(--red);color:#fff;font-family:Sora;font-weight:800;font-size:34px;box-shadow:0 0 0 18px var(--red2),0 20px 40px rgba(220,38,38,.35)" onclick="sendSOS()">SOS</button>
+    <p class="muted" style="margin-top:28px">Tap to share your live location with ${S.contacts.length} emergency contact${S.contacts.length===1?'':'s'}.</p>
+  </div>
+  <div class="grid2"><a class="btn btn-red" href="tel:112">📞 112</a><a class="btn btn-red" href="tel:108">🚑 108</a></div>
+  <a class="acard" style="display:block;text-decoration:none" href="https://www.google.com/maps/search/hospital+near+me" target="_blank" rel="noopener">🏥 <b>Hospitals near me</b> <span class="muted">· opens Google Maps</span></a>
+  <a class="acard" style="display:block;text-decoration:none" href="https://www.google.com/maps/search/police+station+near+me" target="_blank" rel="noopener">🚓 <b>Police stations near me</b> <span class="muted">· opens Google Maps</span></a>`},
+vault(){
+  return`<div class="ah"><h3>Document vault</h3><button class="btn btn-amber btn-sm" onclick="appGo('addDoc')" ${S.vehicles.length?'':'disabled'}>+ Upload</button></div>
+  <div class="banner t-green">🔒 <span>${MODE==='remote'?'Stored on your TagNPark server. Only you can open them.':'Demo: saved in this browser only.'}</span></div>
+  ${S.vehicles.map(v=>{const docs=S.docs.filter(d=>d.vehicleId===v.id).sort((a,b)=>a.expiry-b.expiry);return`<div class="acard"><h4>${esc(v.make)} ${esc(v.model)} <span class="muted" style="font-weight:400">· ${esc(v.reg)}</span></h4>
+    ${docs.length?docs.map(d=>{const dl=daysLeft(d);return`<div class="list-i"><span style="font-size:20px">📄</span><div class="grow"><b style="font-size:14px">${esc(d.type)}</b><div class="muted">${esc(d.file)} · expires ${fmtDate(d.expiry)}</div></div><span class="tag ${dl<=7?'t-red':dl<=30?'t-amber':'t-green'}">${dl<0?'Expired':dl>365?'Valid':dl+' d'}</span>${d.hasFile?`<button class="btn btn-ghost btn-sm" style="padding:4px 8px" onclick="viewDoc('${d.id}')">View</button>`:''}<button onclick="act('doc.remove',{id:'${d.id}'},'Removed')" style="color:var(--red);font-size:18px;padding:4px" aria-label="Remove">×</button></div>`}).join(''):'<p class="muted" style="margin-top:6px">No documents yet.</p>'}
+  </div>`}).join('')||'<div class="acard muted">Add a vehicle first.</div>'}
+  <div class="acard"><h4>Reminders</h4><p class="muted">${HEALTH.sms?'SMS reminders 30, 7 and 1 day before expiry.':'Expiry dates show on your home screen 30 days before. SMS reminders start once SMS is connected.'}</p></div>`;
+},
+addDoc(){return`<button class="back" onclick="appGo('vault')">← Back</button><div class="ah"><h3>Upload document</h3></div>
+  <label class="alab">Vehicle</label><select id="dv" class="ain">${S.vehicles.map(v=>`<option value="${esc(v.id)}">${esc(v.make+' '+v.model+' · '+v.reg)}</option>`).join('')}</select>
+  <label class="alab">Document type</label><div class="chips" id="dtype">${['Insurance','PUC','RC','Driving licence','Service record'].map((t,i)=>`<button class="chip ${i===0?'on':''}" onclick="pickChip(this)">${t}</button>`).join('')}</div>
+  <label class="alab">Photo or PDF (up to 4 MB)</label><input id="dfile" type="file" accept="image/*,application/pdf" class="ain">
+  <label class="alab">Expiry date</label><input id="dexp" type="date" class="ain">
+  <button class="btn btn-ink btn-block" style="margin-top:18px" onclick="addDoc()">Save document</button>`},
+profile(){return`<div class="ah"><h3>Profile</h3></div>
+  <div class="acard"><div class="vrow"><div class="vic" style="border-radius:50%">👤</div><div style="flex:1"><h4>${esc(S.user&&S.user.name)||'Add your name'}</h4><div class="muted">+91 ${esc(S.user?S.user.phone:'')}</div></div><button class="btn btn-ghost btn-sm" onclick="editName()">Edit</button></div></div>
+  <div class="acard" style="padding:4px 16px">
+    ${[['privacy','🔒','Privacy and quiet hours'],['contacts','🆘','Emergency contacts',S.contacts.length+'/5'],['store','🛒','Store and orders',S.orders.length||''],['blocked','🚫','Blocked reporters',S.blocked.length||'']].map(([k,e,l,c])=>`<button class="list-i" style="width:100%;text-align:left" onclick="appGo('${k}')"><span>${e}</span><span class="grow" style="font-weight:600;font-size:14.5px">${l}</span><span class="muted">${c??''} ›</span></button>`).join('')}
+  </div>
+  <div class="acard" style="padding:4px 16px">
+    <button class="list-i" style="width:100%;text-align:left" onclick="confirmBox('Delete your account and all your data? This cannot be undone.','Delete',deleteAccount)"><span>🗑️</span><span class="grow" style="font-weight:600;font-size:14.5px;color:var(--red)">Delete my account</span></button>
+    <button class="list-i" style="width:100%;text-align:left" onclick="logout()"><span>↩️</span><span class="grow" style="font-weight:600;font-size:14.5px">Log out</span></button>
+  </div>
+  <p class="muted" style="text-align:center">TagNPark v1.1 · ${MODE==='remote'?'Live':'Demo'}</p>`},
+privacy(){const p=S.privacy;return`<button class="back" onclick="appGo('profile')">← Profile</button><div class="ah"><h3>Privacy</h3></div>
+  <div class="acard" style="padding:4px 16px">
+    ${[['allowCalls','Allow masked calls','People who scan can call you'],['chatOnly','Chat only','Turn off calls, keep alerts and chat'],['quiet','Quiet hours','No calls or SMS at night. Accidents still come through.']].map(([k,l,d])=>`<div class="list-i"><div class="grow"><b style="font-size:14.5px">${l}</b><div class="muted">${d}</div></div><button class="sw ${p[k]?'on':''}" onclick="act('privacy.set',{key:'${k}',value:${!p[k]}})" aria-label="${l}"></button></div>`).join('')}
+  </div>
+  ${p.quiet?`<div class="acard"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label class="alab" style="margin-top:0">From</label><input type="time" class="ain" value="${esc(p.quietFrom)}" onchange="act('privacy.set',{key:'quietFrom',value:this.value})"></div><div><label class="alab" style="margin-top:0">To</label><input type="time" class="ain" value="${esc(p.quietTo)}" onchange="act('privacy.set',{key:'quietTo',value:this.value})"></div></div></div>`:''}
+  <div class="acard"><h4>App language</h4><div class="chips" style="margin-top:10px">${['English','हिंदी'].map(l=>`<button class="chip ${p.lang===l?'on':''}" onclick="act('privacy.set',{key:'lang',value:'${l}'})">${l}</button>`).join('')}</div></div>`},
+contacts(){return`<button class="back" onclick="appGo('profile')">← Profile</button><div class="ah"><h3>Emergency contacts</h3><span class="muted">${S.contacts.length}/5</span></div>
+  <p class="muted" style="margin-bottom:12px">They are told about accident alerts and SOS. Ask them before adding their number.</p>
+  <div class="acard" style="padding:4px 16px">${S.contacts.map(c=>`<div class="list-i"><div class="vic" style="width:38px;height:38px;border-radius:50%">${esc((c.name||'?')[0])}</div><div class="grow"><b style="font-size:14px">${esc(c.name)}</b><div class="muted">${esc(c.relation)} · ${esc(c.phone)}</div></div><button onclick="act('contact.remove',{id:'${esc(c.id)}'})" style="color:var(--red);font-size:18px;padding:4px" aria-label="Remove">×</button></div>`).join('')||'<p class="muted" style="padding:12px 0">None yet.</p>'}</div>
+  ${S.contacts.length<5?`<div class="acard"><h4>Add contact</h4>
+    <label class="alab">Name</label><input id="cn" class="ain" maxlength="60">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label class="alab">Mobile</label><input id="cp" class="ain" inputmode="numeric" maxlength="10"></div><div><label class="alab">Relation</label><input id="cr" class="ain" placeholder="Sister" maxlength="30"></div></div>
+    <label class="list-i" style="cursor:pointer"><input type="checkbox" id="cok" style="width:18px;height:18px"><span class="grow muted">This person agreed to be my emergency contact</span></label>
+    <button class="btn btn-ink btn-block" style="margin-top:10px" onclick="addContact()">Add contact</button></div>`:''}`},
+blocked(){return`<button class="back" onclick="appGo('profile')">← Profile</button><div class="ah"><h3>Blocked reporters</h3></div>
+  <div class="acard">${S.blocked.length?S.blocked.map(b=>`<div class="list-i"><span>🚫</span><span class="grow">${esc(b)}</span><button class="btn btn-ghost btn-sm" onclick="act('unblock',{label:'${esc(b)}'},'Unblocked')">Unblock</button></div>`).join(''):'<p class="muted">Nobody blocked.</p>'}</div>`},
+store(){return`<button class="back" onclick="appGo(A.tab==='profile'?'profile':'home')">← Back</button><div class="ah"><h3>Store</h3></div>
+  ${PACKS.map(p=>`<div class="acard"><div class="vrow"><div class="vic">🏷️</div><div style="flex:1"><h4>${p.name}</h4><div class="muted">${p.items[0]}</div></div><div style="text-align:right"><b style="font-family:Sora">₹${p.price}</b><br><button class="btn btn-amber btn-sm" style="margin-top:4px;padding:5px 12px" onclick="openModal('buy','${p.id}')">Buy</button></div></div></div>`).join('')}
+  <h4 style="margin:18px 0 10px">My orders</h4>
+  ${S.orders.length?S.orders.map(o=>`<div class="acard"><div class="vrow"><div style="flex:1"><h4>${esc(o.pack)} × ${o.qty}</h4><div class="muted">${esc(o.id)} · ₹${o.amount} · ${fmtDate(o.time)}</div></div><span class="tag t-blue">${esc(o.status)}</span></div></div>`).join(''):'<p class="muted">No orders yet.</p>'}`}
+};
+
+/* ---------- camera QR scanner ---------- */
+let camStream=null,camTimer=null;
+function loadJsQR(){if(window.jsQR)return Promise.resolve();return new Promise(res=>{const s=document.createElement('script');s.src='jsqr.min.js';s.onload=res;s.onerror=res;document.head.appendChild(s)})}
+function scannerBlock(){return`<div class="acard" style="text-align:center;background:var(--ink);color:#fff">
+    <div id="camBox" style="width:220px;height:220px;margin:6px auto;border:3px dashed var(--amber);border-radius:18px;display:grid;place-items:center;font-size:13px;overflow:hidden;position:relative">Point the camera<br>at the sticker's QR</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap">
+      <button class="btn btn-amber btn-sm" onclick="startCam()">📷 Open camera</button>
+      <label class="btn btn-ghost btn-sm" style="color:var(--ink)">🖼️ Photo of QR<input type="file" accept="image/*" capture="environment" style="display:none" onchange="scanImage(this)"></label>
+    </div></div>`}
+async function startCam(){
+  const box=document.getElementById('camBox');
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    box.innerHTML='<video id="camV" playsinline muted style="width:100%;height:100%;object-fit:cover"></video>';
+    const v=document.getElementById('camV');v.srcObject=camStream;await v.play();
+    let det=null;try{if('BarcodeDetector' in window&&(await BarcodeDetector.getSupportedFormats()).includes('qr_code'))det=new BarcodeDetector({formats:['qr_code']})}catch(e){}
+    if(!det)await loadJsQR();
+    const cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});
+    camTimer=setInterval(async()=>{
+      if(!v.videoWidth)return;let txt=null;
+      try{if(det){const r=await det.detect(v);if(r[0])txt=r[0].rawValue}else if(window.jsQR){cv.width=v.videoWidth;cv.height=v.videoHeight;cx.drawImage(v,0,0);const r=jsQR(cx.getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height);if(r)txt=r.data}}catch(e){}
+      if(txt){const m=txt.match(CODE_RE);if(m){stopCam();if(navigator.vibrate)navigator.vibrate(80);onScanned(m[0].toUpperCase())}}
+    },350);
+  }catch(e){box.innerHTML='Camera not available here.<br>Use "Photo of QR" or type the code.'}
+}
+function stopCam(){clearInterval(camTimer);camTimer=null;if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}}
+function scanImage(inp){const f=inp.files[0];if(!f)return;const img=new Image();img.onload=async()=>{
+  let txt=null;try{if('BarcodeDetector' in window){const r=await new BarcodeDetector({formats:['qr_code']}).detect(img);if(r[0])txt=r[0].rawValue}}catch(e){}
+  if(!txt)await loadJsQR();
+  if(!txt&&window.jsQR){const cv=document.createElement('canvas');const sc=Math.min(1,1200/Math.max(img.width,img.height));cv.width=img.width*sc;cv.height=img.height*sc;const cx=cv.getContext('2d');cx.drawImage(img,0,0,cv.width,cv.height);const r=jsQR(cx.getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height);if(r)txt=r.data}
+  const m=txt&&txt.match(CODE_RE);if(m)onScanned(m[0].toUpperCase());else toast('No TagNPark QR found in the photo. Try again closer.')};img.src=URL.createObjectURL(f)}
+function onScanned(code){const i=document.getElementById('tcode');if(i)i.value=code;toast('Found '+code);
+  if(A.screen==='activate')linkTag(A.param,code);else gotCode(code)}
+function gotCode(code){code=String(code||'').toUpperCase().trim();if(!CODE_RE.test(code)){toast('The code looks like TNP-XXXXX');return}ls('tnp_pending_tag',code);appGo(S.vehicles.some(v=>!v.tag)?'pickForTag':'addVehicle')}
+
+/* ---------- app actions ---------- */
+async function sendOtp(){const p=document.getElementById('ph').value.replace(/\D/g,'');if(!/^[6-9]\d{9}$/.test(p)){toast('Enter a valid 10-digit mobile number');return}
+  try{await api('POST','auth/otp',{phone:p});A.phone=p;A.otpSent=true;renderApp();setTimeout(()=>document.querySelector('[data-o="0"]')?.focus(),50)}catch(e){toast(e.message)}}
+function otpMove(i){
+  const v=i.value.replace(/\D/g,'');
+  if(v.length>1){const boxes=[...document.querySelectorAll('[data-o]')];v.split('').slice(0,6).forEach((c,k)=>{if(boxes[k])boxes[k].value=c});}else i.value=v;
+  if(i.value&&i.nextElementSibling&&v.length<=1)i.nextElementSibling.focus();
+  if([...document.querySelectorAll('[data-o]')].every(x=>x.value))verifyOtp()}
+async function verifyOtp(){if(A.busy)return;const v=[...document.querySelectorAll('[data-o]')].map(x=>x.value).join('');if(v.length!==6)return;A.busy=true;
+  try{const r=await api('POST','auth/verify',{phone:A.phone,otp:v});TOKEN=r.token;ls('tnp_token',TOKEN);A.otpSent=false;lastOpen=-1;A.busy=false;await refreshState();A.screen='home';await enterApp();toast('Logged in')}
+  catch(e){A.busy=false;toast(e.message);document.querySelectorAll('[data-o]').forEach(x=>x.value='');document.querySelector('[data-o="0"]')?.focus()}}
+async function logout(){try{await api('POST','auth/logout')}catch(e){}TOKEN='';ls('tnp_token',null);S=fresh();A={...A,screen:'login',otpSent:false,loaded:false};renderApp()}
+async function deleteAccount(){const r=await act('account.delete');if(r){TOKEN='';ls('tnp_token',null);S=fresh();A.screen='login';A.loaded=false;renderApp();toast('Account deleted')}}
+function pickChip(b){b.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));b.classList.add('on')}
+async function addVehicle(){
+  const r=await act('vehicle.add',{reg:document.getElementById('vreg').value,type:document.querySelector('#vtype .on').textContent,make:document.getElementById('vmake').value,model:document.getElementById('vmodel').value,colour:document.getElementById('vcol').value},'Vehicle added');
+  if(!r)return;const pend=ls('tnp_pending_tag');if(pend)linkTag(r.id,pend);else appGo('activate',r.id)}
+async function linkTag(vid,code){code=String(code||'').toUpperCase().trim();if(!CODE_RE.test(code)){toast('The code looks like TNP-XXXXX');return}stopCam();
+  const r=await act('tag.activate',{vehicleId:vid,code},'Tag linked! Stick it on the windscreen.');if(r){ls('tnp_pending_tag',null);appGo('vehicle',vid)}}
+function sendChat(id){const i=document.getElementById('chatIn');const t=i.value.trim();if(!t)return;act('alert.reply',{id,text:t})}
+async function ownerCall(id){if(MODE!=='remote'){appGo('call',id);return}try{await api('POST','incident/call',{id})}catch(e){toast(e.message)}}
+function startShare(){const w=[...document.querySelectorAll('.shw:checked')].map(x=>x.value);if(!w.length){toast('Pick at least one contact');return}act('share.start',{with:w,minutes:+document.querySelector('#dur .on').dataset.m},'Live location shared')}
+async function sendSOS(){if(!S.contacts.length){toast('Add an emergency contact first');appGo('contacts');return}
+  const r=await act('share.start',{with:S.contacts.map(c=>c.id),minutes:120});if(!r)return;toast('SOS sent to '+S.contacts.map(c=>c.name).join(', '));setTimeout(()=>appGo('track'),1200)}
+function addContact(){if(!document.getElementById('cok').checked){toast('Please confirm the person agreed');return}
+  act('contact.add',{name:document.getElementById('cn').value.trim(),phone:document.getElementById('cp').value.replace(/\D/g,''),relation:document.getElementById('cr').value.trim()},'Contact added')}
+function editName(){const b=document.getElementById('modalBox');b.innerHTML=`<h3>Your name</h3><div class="field"><input id="nm" maxlength="80" value="${esc(S.user&&S.user.name)}"></div><button class="btn btn-ink btn-block" style="margin-top:16px" onclick="closeModal();act('profile.name',{name:document.getElementById('nm').value.trim()},'Saved')">Save</button>`;document.getElementById('modal').classList.add('on')}
+function confirmBox(msg,yes,fn){const b=document.getElementById('modalBox');b.innerHTML=`<h3>Are you sure?</h3><p class="muted" style="margin:8px 0 18px">${msg}</p><div class="row2"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" id="cfmYes">${yes}</button></div>`;document.getElementById('cfmYes').onclick=()=>{closeModal();fn()};document.getElementById('modal').classList.add('on')}
+function fileToDataURL(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
+async function shrinkImage(f,max=1600,q=.8){const url=await fileToDataURL(f);if(!/^image\//.test(f.type))return url;return new Promise(res=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=img.width*sc;c.height=img.height*sc;c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};img.onerror=()=>res(url);img.src=url})}
+async function addDoc(){const f=document.getElementById('dfile').files[0];const e=document.getElementById('dexp').value;if(!e){toast('Add the expiry date');return}
+  let data=null;if(f){if(f.size>8e6){toast('File is too big (max 4 MB)');return}data=await shrinkImage(f);if(data.length>5.5e6){toast('File is too big (max 4 MB)');return}}
+  const r=await act('doc.add',{vehicleId:document.getElementById('dv').value,type:document.querySelector('#dtype .on').textContent,expiry:e,fileName:f?f.name:'',data},'Saved');if(r)appGo('vault')}
+async function viewDoc(id){
+  try{let url;
+    if(MODE==='remote'){const r=await fetch('api/index.php?r=doc&id='+encodeURIComponent(id),{headers:{'X-Token':TOKEN}});if(!r.ok)throw new Error('Could not open');url=URL.createObjectURL(await r.blob())}
+    else{url=LOCAL.docData(id);if(!url)throw new Error('This demo file was not kept')}
+    const b=document.getElementById('modalBox');b.innerHTML=`<h3>Document</h3>${/pdf/.test(url.slice(0,40))||url.startsWith('blob:')?`<p class="muted" style="margin:8px 0">If it doesn't show below, <a href="${url}" target="_blank" rel="noopener">open it here</a>.</p>`:''}<object data="${url}" style="width:100%;height:60vh;border-radius:10px"><img src="${url}" style="max-width:100%;border-radius:10px"></object><button class="btn btn-ink btn-block" style="margin-top:12px" onclick="closeModal()">Close</button>`;document.getElementById('modal').classList.add('on');
+  }catch(e){toast(e.message)}}
+async function askNotif(){try{const p=await Notification.requestPermission();toast(p==='granted'?'Alerts on. Keep the TagNPark app open in the background.':'Alerts stay off. You can turn them on in browser settings.')}catch(e){}renderApp()}
+
+/* =====================================================================
+   PUBLIC SCAN PAGE  (#scan-TNP-XXXXX, opened from the sticker QR)
+   ===================================================================== */
+let scanState=null,scanPoll=null;
+const T={
+  en:{title:'Contact the owner',sub:'The owner will get your message right away. You will not see their number, and they will not see yours.',what:'What\'s the problem?',note:'Add a note (optional)',photo:'Add a photo (optional)',loc:'Share my location',mob:'Your mobile number',why:'We check your number to stop fake alerts.',otp:'Get OTP',enter:'Enter the OTP',alert:'Send alert',call:'Call owner',emerg:'Emergency? Call first',sent:'Alert sent',st1:'Alert delivered to owner',st2:'Seen by owner',st3:'Owner replied',wait:'Waiting…',again:'Report another problem',inactive:'This tag is not active',inactiveSub:'The owner has switched this tag off. If this is an emergency, call 112.',unknown:'Tag not found',unknownSub:'This QR is not a valid TagNPark tag. Check the code and try again.',newTag:'New TagNPark tag',newTagSub:'This sticker is not linked to a vehicle yet.',link:'Link this tag to my vehicle',linkSub:'Bought this tag? It takes 1 minute: log in with your mobile, add your car or bike, done.',bystander:'Saw this on a parked vehicle? The owner has not set it up yet, so we cannot reach them.',hp:'High priority. The owner\'s emergency contacts are being told too.',loading:'Loading…'},
+  hi:{title:'मालिक से संपर्क करें',sub:'मालिक को आपका संदेश तुरंत मिलेगा। न आप उनका नंबर देखेंगे, न वे आपका।',what:'क्या समस्या है?',note:'कुछ लिखें (वैकल्पिक)',photo:'फ़ोटो जोड़ें (वैकल्पिक)',loc:'मेरी लोकेशन भेजें',mob:'आपका मोबाइल नंबर',why:'फ़र्ज़ी अलर्ट रोकने के लिए नंबर की पुष्टि ज़रूरी है।',otp:'OTP भेजें',enter:'OTP डालें',alert:'अलर्ट भेजें',call:'मालिक को कॉल करें',emerg:'आपातकाल? पहले कॉल करें',sent:'अलर्ट भेज दिया',st1:'मालिक तक अलर्ट पहुँचा',st2:'मालिक ने देखा',st3:'मालिक ने जवाब दिया',wait:'इंतज़ार…',again:'दूसरी समस्या बताएँ',inactive:'यह टैग चालू नहीं है',inactiveSub:'मालिक ने यह टैग बंद कर दिया है। आपातकाल में 112 पर कॉल करें।',unknown:'टैग नहीं मिला',unknownSub:'यह सही TagNPark टैग नहीं है। कोड जाँचें।',newTag:'नया TagNPark टैग',newTagSub:'यह स्टिकर अभी किसी गाड़ी से जुड़ा नहीं है।',link:'इस टैग को मेरी गाड़ी से जोड़ें',linkSub:'यह टैग खरीदा है? 1 मिनट लगेगा: मोबाइल से लॉगिन करें, गाड़ी जोड़ें, बस।',bystander:'किसी खड़ी गाड़ी पर देखा? मालिक ने इसे अभी चालू नहीं किया है, इसलिए हम उन तक नहीं पहुँच सकते।',hp:'हाई प्रायोरिटी। मालिक के इमरजेंसी कॉन्टैक्ट्स को भी बताया जा रहा है।',loading:'लोड हो रहा है…'}
+};
+async function openScan(code){
+  clearInterval(scanPoll);
+  if(!code&&MODE!=='remote'){try{const s=await api('GET','state').catch(()=>null);const v=s&&s.vehicles.find(x=>x.tagStatus==='ACTIVE');code=v?v.tag:'TNP-7Q2X9'}catch(e){code='TNP-7Q2X9'}}
+  if(!scanState||scanState.code!==code)scanState={code,lang:(navigator.language||'').startsWith('hi')?'hi':'en',step:'load',info:null,reason:null,photo:null,note:'',phone:'',otp:false,loc:true,lat:null,lng:null,inc:null,status:null};
+  if(!code){scanState.step='form';scanState.info={status:'unknown'};renderScan();return}
+  renderScan();
+  try{scanState.info=await api('GET','scan',null,{code});}catch(e){scanState.info={status:'error',msg:e.message}}
+  if(scanState.step==='load')scanState.step='form';
+  renderScan();
+  if(scanState.step==='sent')pollIncident();
+}
+function scanHead(){const s=scanState;return`<div class="scanhead"><a href="#home" class="logo" style="font-size:18px"><svg width="28" height="28" viewBox="0 0 34 34"><rect width="34" height="34" rx="9" fill="#FFB800"/><path d="M11 25V9h7.2c3.6 0 5.8 2 5.8 5.1s-2.2 5.1-5.8 5.1H14.6V25z M14.6 16.3h3.3c1.6 0 2.5-.8 2.5-2.2s-.9-2.2-2.5-2.2h-3.3z" fill="#0E1A2B"/></svg><span>Tag<b>N</b>Park</span></a>
+    <div class="langsw"><button class="${s.lang==='en'?'on':''}" onclick="scanState.lang='en';renderScan()">EN</button><button class="${s.lang==='hi'?'on':''}" onclick="scanState.lang='hi';renderScan()">हिंदी</button></div></div>`}
+function renderScan(){
+  const s=scanState,t=T[s.lang],root=document.getElementById('scanRoot');
+  if(s.step==='load'){root.innerHTML=scanHead()+`<div class="empty">${t.loading}</div>`;return}
+  const info=s.info||{status:'unknown'};
+  if(info.status==='unpaired')return root.innerHTML=scanHead()+`
+    <div class="acard" style="text-align:center;padding:26px"><div style="font-size:44px">🏷️</div><h3 style="font-size:22px;margin:8px 0 4px">${t.newTag}</h3><p class="muted">${t.newTagSub}</p><div class="plate" style="margin-top:12px;font-size:17px">${esc(info.code)}</div></div>
+    <div class="acard"><p style="margin-bottom:12px">${t.linkSub}</p><button class="btn btn-amber btn-block" onclick="ls('tnp_pending_tag','${esc(info.code)}');location.hash='app'">${t.link}</button></div>
+    <p class="muted" style="text-align:center;margin-top:10px">${t.bystander}</p>
+    <div class="grid2" style="margin-top:14px"><a class="btn btn-red" href="tel:112">📞 112</a><a class="btn btn-red" href="tel:108">🚑 108</a></div>`;
+  if(info.status!=='active')return root.innerHTML=scanHead()+`<div class="acard" style="text-align:center;padding:30px"><div style="font-size:40px">⛔</div><h3 style="margin:10px 0 6px">${info.status==='inactive'?t.inactive:info.status==='error'?esc(info.msg):t.unknown}</h3><p class="muted">${info.status==='inactive'?t.inactiveSub:t.unknownSub}</p><a class="btn btn-red" style="margin-top:16px" href="tel:112">📞 112</a></div>`;
+  const v=info.vehicle;
+  const vcard=`<div class="acard" style="display:flex;align-items:center;gap:14px"><div class="vic" style="width:54px;height:54px;font-size:26px">${v.type==='Bike'?'🛵':'🚗'}</div><div><div class="muted">${esc(v.colour)} ${esc(v.type)}</div><div class="plate" style="font-size:19px"><small>IND</small>${esc(v.reg)}</div></div></div>`;
+  if(s.step==='sent'){
+    const st=s.status||{status:'OPEN',time:now(),chat:[]};const seen=st.status!=='OPEN',replied=!!st.reply;
+    root.innerHTML=scanHead()+vcard+`
+      <div class="acard" style="text-align:center"><div style="font-size:44px">✅</div><h3 style="font-size:22px;margin:6px 0">${t.sent}</h3><p class="muted">${REASONS[s.reason][s.lang]}</p></div>
+      ${REASONS[s.reason].high?`<div class="banner t-red">🚑 <span>${t.hp}</span></div><div class="grid2"><a class="btn btn-red" href="tel:112">📞 112</a><a class="btn btn-red" href="tel:108">🚑 108</a></div>`:''}
+      <div class="acard"><div class="timeline">
+        <div class="tl done"><div class="c">✓</div><div><b>${t.st1}</b><div class="muted">${ago(st.time||now())}</div></div></div>
+        <div class="tl ${seen?'done':'wait'}"><div class="c">${seen?'✓':''}</div><div><b>${t.st2}</b><div class="muted">${seen?ago(st.seenAt||now()):t.wait}</div></div></div>
+        <div class="tl ${replied?'done':''}"><div class="c">${replied?'✓':''}</div><div><b>${t.st3}</b><div class="muted">${replied?'"'+esc(st.reply)+'"':'—'}</div></div></div>
+      </div><p class="muted">This page updates by itself. Keep it open.</p></div>
+      ${(st.chat||[]).length?`<div class="acard"><div class="chat">${st.chat.map(m=>`<div class="msg ${m.me?'them':'me'}">${esc(m.t)}</div>`).join('')}</div></div>`:''}
+      ${info.allowCalls?`<button class="btn btn-green btn-block" onclick="scanCall()">📞 ${t.call}</button>`:''}
+      <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="scanState.step='form';scanState.reason=null;scanState.otp=false;renderScan()">${t.again}</button>`;
+    return;
+  }
+  const high=s.reason&&REASONS[s.reason].high;
+  root.innerHTML=scanHead()+`
+    <h2 style="font-size:26px;font-weight:800;margin-bottom:6px">${t.title}</h2><p class="muted" style="margin-bottom:16px">${t.sub}</p>
+    ${vcard}
+    ${high?`<div class="emerg"><b style="font-size:17px">${t.emerg}</b><div class="nums"><a href="tel:112">112<small>Police / all</small></a><a href="tel:108">108<small>Ambulance</small></a></div></div>`:''}
+    <h3 style="font-size:17px;margin:18px 0 10px">${t.what}</h3>
+    <div class="reasons">${Object.entries(REASONS).map(([k,r])=>`<button class="reason ${r.high?'urgent':''} ${s.reason===k?'on':''}" onclick="scanState.reason='${k}';renderScan()"><span class="e">${r.e}</span>${r[s.lang]}</button>`).join('')}</div>
+    <label class="alab" style="margin-top:18px">${t.note}</label><textarea id="snote" class="ain" rows="2" maxlength="300" oninput="scanState.note=this.value" placeholder="${s.lang==='en'?'e.g. Blocking gate no. 2':'जैसे गेट नंबर 2 रोका है'}">${esc(s.note)}</textarea>
+    <label class="alab">${t.photo}</label><input type="file" accept="image/*" capture="environment" class="ain" onchange="scanPhoto(this)">
+    ${s.photo?`<img class="photo-prev" src="${s.photo}" alt="">`:''}
+    <label class="list-i" style="cursor:pointer;margin-top:6px"><input type="checkbox" ${s.loc?'checked':''} onchange="scanState.loc=this.checked;if(this.checked)getLoc()" style="width:18px;height:18px"><span class="grow">📍 ${t.loc}${s.lat?' ✓':''}</span></label>
+    <div class="acard" style="margin-top:10px">
+      <label class="alab" style="margin-top:0">${t.mob}</label>
+      <div style="display:flex;gap:8px"><input id="sph" class="ain" inputmode="numeric" maxlength="10" value="${esc(s.phone)}" placeholder="98765 43210" ${s.otp?'disabled':''}>${s.otp?'':`<button class="btn btn-ink btn-sm" onclick="scanOtp()">${t.otp}</button>`}</div>
+      <p class="muted" style="margin-top:6px">${t.why}</p>
+      ${s.otp?`<label class="alab">${t.enter}${HEALTH.demoOtp?' <span class="muted">(test: 123456)</span>':''}</label><input id="sotp" class="ain" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••">`:''}
+    </div>
+    <div class="grid2" style="margin-top:6px">
+      <button class="btn btn-ink" onclick="scanSubmit(false)">🔔 ${t.alert}</button>
+      ${info.allowCalls?`<button class="btn btn-green" onclick="scanSubmit(true)">📞 ${t.call}</button>`:`<button class="btn btn-ghost" disabled title="Owner accepts alerts only">📞 —</button>`}
+    </div>
+    <p class="muted" style="text-align:center;margin-top:16px">🔒 Powered by TagNPark · <a href="#home">Get a tag for your vehicle</a></p>`;
+  if(s.loc&&s.lat==null&&!s.locAsked)getLoc();
+}
+function getLoc(){scanState.locAsked=true;try{navigator.geolocation.getCurrentPosition(p=>{scanState.lat=+p.coords.latitude.toFixed(6);scanState.lng=+p.coords.longitude.toFixed(6);if(scanState.step==='form')renderScan()},()=>{},{timeout:8000,maximumAge:60000})}catch(e){}}
+async function scanPhoto(i){const f=i.files[0];if(!f)return;scanState.photo=await shrinkImage(f,900,.7);renderScan()}
+async function scanOtp(){const p=document.getElementById('sph').value.replace(/\D/g,'');if(!/^[6-9]\d{9}$/.test(p)){toast('Enter a valid 10-digit mobile number');return}
+  try{await api('POST','scan/otp',{code:scanState.code,phone:p});scanState.phone=p;scanState.otp=true;renderScan();toast('OTP sent');setTimeout(()=>document.getElementById('sotp')?.focus(),50)}catch(e){toast(e.message)}}
+async function scanSubmit(call){
+  const s=scanState;
+  if(!s.reason){toast(s.lang==='en'?'Pick a reason first':'पहले समस्या चुनें');return}
+  if(!s.otp){toast(s.lang==='en'?'Verify your mobile number first':'पहले मोबाइल नंबर की पुष्टि करें');return}
+  const otp=document.getElementById('sotp').value;
+  try{
+    const r=await api('POST','scan/report',{code:s.code,phone:s.phone,otp,reason:s.reason,note:s.note,photo:s.photo,lat:s.loc?s.lat:null,lng:s.loc?s.lng:null});
+    if(r.merged)toast('Joined an alert already sent for this problem');
+    s.inc={id:r.id,rt:r.rt};s.step='sent';s.status=null;renderScan();pollIncident();
+    if(call)scanCall();
+  }catch(e){toast(e.message)}
+}
+async function pollIncident(){
+  clearInterval(scanPoll);
+  const tick=async()=>{if(!scanState||scanState.step!=='sent'||!document.getElementById('v-scan').classList.contains('on')){clearInterval(scanPoll);return}
+    try{scanState.status=await api('GET','incident',null,{id:scanState.inc.id,rt:scanState.inc.rt});renderScan()}catch(e){}};
+  await tick();scanPoll=setInterval(tick,5000);
+}
+async function scanCall(){
+  if(MODE==='remote'){try{await api('POST','incident/call',{id:scanState.inc&&scanState.inc.id})}catch(e){toast(e.message)}return}
+  const b=document.getElementById('modalBox');b.innerHTML=`<div style="text-align:center"><div style="font-size:46px">📞</div><h3>Connecting through a masked number… (demo)</h3><p class="muted" style="margin:8px 0 18px">Neither of you sees the other's number.</p><button class="btn btn-red btn-block" onclick="closeModal();toast('Call ended')">End call</button></div>`;document.getElementById('modal').classList.add('on');
+}
+
+/* =====================================================================
+   ADMIN PANEL  (#admin  or  /admin)
+   ===================================================================== */
+const APAGES={dash:['📊','Dashboard'],tags:['🏷️','Tag inventory'],support:['🎧','Support'],abuse:['🚩','Abuse queue'],orders:['📦','Orders'],leads:['🤝','Business leads'],admins:['👥','Admin users'],audit:['📜','Audit log']};
+let AV={me:null,page:'dash',data:null,login:{step:'pass',email:''},tagFilter:'ALL',tagQ:'',supQ:'',supSel:null,loading:false,newAdmin:null};
+
+async function enterAdmin(){
+  const root=document.getElementById('adminRoot');
+  if(MODE==='setup'){root.innerHTML=`<div class="adm-login"><div class="l"><div><h2>Setup needed</h2><p>The database is not connected yet.</p></div></div><div class="r"><div class="card"><h3>Finish setup first</h3><p class="muted" style="margin:8px 0 18px">Open the installer once to connect the database and create your admin account.</p><a class="btn btn-ink btn-block" href="install.php">Open installer</a></div></div></div>`;return}
+  if(ATOKEN&&!AV.me&&AV.login.step!=='mfa'){try{AV.me=await api('GET','admin/me')}catch(e){ATOKEN='';ss('tnp_admin',null)}}
+  if(!AV.me){root.innerHTML=adminLoginHTML();return}
+  adminGo(AV.page);
+}
+async function adminGo(p,keepSel){
+  if(!AV.me)return enterAdmin();
+  if(!AV.me.pages.includes(p))p='dash';
+  AV.page=p;if(!keepSel)AV.supSel=null;AV.loading=true;const req=AV.req=(AV.req||0)+1;if(!keepSel)AV.data=null;renderAdmin();
+  try{
+    const params={page:p};
+    if(p==='tags'){params.status=AV.tagFilter;params.q=AV.tagQ}
+    if(p==='support')params.q=AV.supQ;
+    const dd=await api('GET','admin/data',null,params);if(req!==AV.req)return;AV.data=dd;
+    if(p==='support'&&AV.supSel)AV.user=await api('GET','admin/data',null,{page:'user',id:AV.supSel});else AV.user=null;
+    if(req!==AV.req)return;
+  }catch(e){if(req!==AV.req)return;if(e.status===401||/login required/i.test(e.message)){AV.me=null;ATOKEN='';ss('tnp_admin',null);return enterAdmin()}AV.data={error:e.message}}
+  AV.loading=false;renderAdmin();
+}
+async function adminAct(name,payload,msg){
+  try{const r=await api('POST','admin/act',{...(payload||{}),action:name});if(msg)toast(msg);await adminGo(AV.page,true);return r}
+  catch(e){toast(e.message);if(e.status===401){AV.me=null;enterAdmin()}return null}
+}
+function renderAdmin(){
+  const root=document.getElementById('adminRoot');const me=AV.me;if(!me)return;
+  const d=AV.data||{};
+  root.innerHTML=`<div class="adm">
+    <aside class="side" id="aside">
+      <a class="logo" href="#home"><span>Tag<b>N</b>Park</span> <span style="font-size:11px;font-family:Inter;font-weight:600;background:#22324A;padding:2px 7px;border-radius:6px;margin-left:4px">ADMIN</span></a>
+      ${me.pages.map(p=>`<button class="nv ${AV.page===p?'on':''}" onclick="adminGo('${p}')"><span>${APAGES[p][0]}</span>${APAGES[p][1]}</button>`).join('')}
+      <div class="me"><b>${esc(me.name)}</b>${esc(me.role)} · ${esc(me.email)}<br><button style="color:var(--amber);font-weight:600;margin-top:8px" onclick="adminLogout()">Log out</button></div>
+    </aside>
+    <section class="amain">
+      <div class="mtop"><button class="btn btn-ink btn-sm" onclick="document.getElementById('aside').classList.toggle('open')">☰ Menu</button><span class="demo-pill">${MODE==='remote'?'Live':'Demo data'}</span></div>
+      ${AV.loading&&!AV.data?'<div class="empty">Loading…</div>':d.error?`<div class="err">${esc(d.error)}</div>`:APAGE_HTML[AV.page](d)}
+    </section></div>`;
+}
+function adminLoginHTML(){
+  const L=AV.login;
+  return`<div class="adm-login">
+    <div class="l">
+      <a href="#home" class="logo" style="color:#fff"><svg width="34" height="34" viewBox="0 0 34 34"><rect width="34" height="34" rx="9" fill="#FFB800"/><path d="M11 25V9h7.2c3.6 0 5.8 2 5.8 5.1s-2.2 5.1-5.8 5.1H14.6V25z M14.6 16.3h3.3c1.6 0 2.5-.8 2.5-2.2s-.9-2.2-2.5-2.2h-3.3z" fill="#0E1A2B"/></svg><span>Tag<b style="color:var(--amber)">N</b>Park</span></a>
+      <div class="hide-sm"><h2>Admin control centre</h2><p>Tag inventory, support, abuse handling, orders and reports. Only for the TagNPark team.</p></div>
+      <p class="hide-sm" style="font-size:13px">🔒 Every action is recorded in the audit log.</p>
+    </div>
+    <div class="r"><div class="card">
+      ${L.step==='pass'?`
+        <h3>Admin login</h3><p class="muted">Sign in with your work email.</p>
+        <form onsubmit="adminPass(event)">
+          <div class="field"><label>Email</label><input id="aem" type="email" required autocomplete="username" value="${esc(L.email)}"></div>
+          <div class="field"><label>Password</label><div class="pwbox"><input id="apw" type="password" required autocomplete="current-password"><button type="button" onclick="const i=document.getElementById('apw');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'Show':'Hide'">Show</button></div></div>
+          <button class="btn btn-ink btn-block" style="margin-top:20px" id="aBtn">Continue</button>
+        </form>
+        ${L.err?`<div class="err">${esc(L.err)}</div>`:''}
+        <p class="muted" style="margin-top:18px;text-align:center"><a href="javascript:void(0)" onclick="toast('Ask the Super Admin to reset your password')">Forgot password?</a> · <a href="#home">Back to website</a></p>`
+      :`
+        <h3>Two-step check</h3><p class="muted">Enter the 6-digit code from your authenticator app${MODE==='remote'?'':' (demo: 123456)'}.</p>
+        <form onsubmit="adminMfa(event)">
+          <div class="field"><label>Code</label><input id="amfa" inputmode="numeric" maxlength="6" required autocomplete="one-time-code" style="letter-spacing:.4em;font-size:20px;text-align:center"></div>
+          <button class="btn btn-ink btn-block" style="margin-top:20px">Log in</button>
+        </form>
+        ${L.err?`<div class="err">${esc(L.err)}</div>`:''}
+        <p class="muted" style="margin-top:18px;text-align:center"><a href="javascript:void(0)" onclick="AV.login={step:'pass',email:''};enterAdmin()">← Use a different account</a></p>`}
+    </div></div></div>`;
+}
+async function adminPass(e){e.preventDefault();const em=document.getElementById('aem').value.trim().toLowerCase();
+  try{const r=await api('POST','admin/login',{email:em,password:document.getElementById('apw').value});ATOKEN=r.token;ss('tnp_admin',ATOKEN);AV.login={step:'mfa',email:em};enterAdmin();setTimeout(()=>document.getElementById('amfa')?.focus(),50)}
+  catch(err){AV.login={step:'pass',email:em,err:err.message};enterAdmin()}}
+async function adminMfa(e){e.preventDefault();
+  try{await api('POST','admin/mfa',{code:document.getElementById('amfa').value});AV.me=await api('GET','admin/me');AV.page='dash';AV.login={step:'pass',email:''};adminGo('dash')}
+  catch(err){if(err.status===401){AV.login={step:'pass',email:AV.login.email,err:'Session ended. Log in again.'};ATOKEN='';ss('tnp_admin',null)}else AV.login.err=err.message;enterAdmin()}}
+async function adminLogout(){try{await api('POST','admin/logout')}catch(e){}ATOKEN='';ss('tnp_admin',null);AV.me=null;AV.data=null;AV.login={step:'pass',email:''};enterAdmin()}
+
+const pctS=v=>v==null?'—':v+'%';
+const kpi=(label,v,target,good)=>`<div class="kpi"><div class="k">${label}</div><div class="v">${v}</div><div class="t ${good==null?'muted':good?'ok':'bad'}">${target}${good==null?'':good?' ✓':' ✗'}</div></div>`;
+const APAGE_HTML={
+dash(d){
+  const mx=Math.max(1,...Object.values(d.byReason||{})),dm=Math.max(1,...d.days.map(x=>x.n));
+  return`<div class="atop"><div><h2>Dashboard</h2><div class="muted">Last 7 days · targets from PRD 3.2</div></div><span class="demo-pill">${MODE==='remote'?'Live data':'Demo data'}</span></div>
+  ${d.demoOtp&&MODE==='remote'?`<div class="err" style="margin:0 0 16px">⚠️ SMS is not connected yet, so every OTP is <b>123456</b>. Anyone could log in as any owner. Use only for testing. Don't give tags to real customers until MSG91 is set up.</div>`:''}
+  <div class="kpis">
+    ${kpi('Activated tags',d.active,'Goal 100,000 in year 1',null)}
+    ${kpi('Activation rate',d.sold?Math.round(d.active/d.sold*100)+'%':'—','Target ≥ 80%',d.sold?d.active/d.sold>=.8:null)}
+    ${kpi('Seen within 15 min',pctS(d.respRate),'Target ≥ 60%',d.respRate==null?null:d.respRate>=60)}
+    ${kpi('Typical time to seen',dur(d.medianSeen),'Median, this week',null)}
+    ${kpi('Spam rate',pctS(d.spamRate),'Target ≤ 2%',d.spamRate==null?null:d.spamRate<=2)}
+    ${kpi('Alerts this week',d.week,d.unread+' still unread',null)}
+    ${kpi('Owners',d.users,'Registered',null)}
+    ${kpi('Orders',d.orders,d.toDispatch+' to dispatch',null)}
+  </div>
+  <div class="cols2">
+    <div class="panel"><h3>Alerts per day</h3><div class="vbars">${d.days.map(x=>`<div><b style="color:var(--ink)">${x.n}</b><i style="height:${x.n/dm*100}%"></i>${new Date(x.t).toLocaleDateString('en-IN',{weekday:'short'})}</div>`).join('')}</div></div>
+    <div class="panel"><h3>Alerts by reason</h3><div class="bars">${Object.entries(d.byReason||{}).sort((a,b)=>b[1]-a[1]).map(([r,n])=>`<div class="bar"><span>${REASONS[r].e} ${REASONS[r].en}</span><i style="width:${n/mx*100}%"></i><b>${n}</b></div>`).join('')||'<p class="muted">No alerts yet.</p>'}</div></div>
+  </div>
+  <div class="panel"><h3>Latest alerts</h3><table class="t"><tr><th>Time</th><th>Vehicle</th><th>Reason</th><th>Status</th><th>Seen after</th></tr>
+    ${d.latest.map(a=>`<tr><td>${ago(a.time)}</td><td>${esc(a.reg)}</td><td>${REASONS[a.reason].e} ${REASONS[a.reason].en}</td><td>${statusTag(a.status)}</td><td>${dur(a.seenIn)}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">No alerts yet.</td></tr>'}</table></div>`;
+},
+tags(d){
+  const st=['ALL','CREATED','PRINTED','SOLD','ACTIVE','SUSPENDED','DEACTIVATED'];
+  const cls={CREATED:'t-grey',PRINTED:'t-blue',SOLD:'t-amber',ACTIVE:'t-green',SUSPENDED:'t-red',DEACTIVATED:'t-grey'};
+  return`<div class="atop"><div><h2>Tag inventory</h2><div class="muted">${d.counts.ALL||0} tags in ${d.batches.length} batches</div></div></div>
+  <div class="panel"><h3>1. Make a new batch of stickers</h3>
+    <form class="filters" style="margin:0;align-items:flex-end" onsubmit="genBatch(event)">
+      <div class="field" style="margin:0"><label>Type</label><select id="bt"><option>Car</option><option>Bike</option><option>Combo</option></select></div>
+      <div class="field" style="margin:0"><label>How many tags (max 500)</label><input id="bn" type="number" min="1" max="500" value="50" required></div>
+      <button class="btn btn-amber">Generate</button>
+    </form>
+    <p class="muted" style="margin-top:10px">Then: 2. Print stickers → 3. Mark printed → 4. Mark sold when you sell them. The buyer scans the sticker and links it to their vehicle.</p></div>
+  <div class="panel"><h3>Batches</h3><table class="t"><tr><th>Batch</th><th>Type</th><th>Tags</th><th>Created</th><th>Linked</th><th></th></tr>
+    ${d.batches.map(b=>`<tr><td><b>${esc(b.id)}</b></td><td>${esc(b.type)}</td><td>${b.count}</td><td>${fmtDate(b.created)}</td><td>${b.active}</td>
+      <td style="white-space:nowrap"><button class="btn btn-amber btn-sm" onclick="printStickers('${esc(b.id)}')">🖨️ Print stickers</button> ${b.printed?'<span class="tag t-blue">Printed</span>':`<button class="btn btn-ghost btn-sm" onclick="adminAct('batch.printed',{id:'${esc(b.id)}'},'Marked printed')">Mark printed</button>`} <button class="btn btn-ghost btn-sm" onclick="adminAct('batch.sold',{id:'${esc(b.id)}'},'Batch marked sold')">Mark sold</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">No batches yet. Make one above.</td></tr>'}</table></div>
+  <div class="panel"><h3>All tags</h3>
+    <div class="filters"><input id="tq" placeholder="Search code, e.g. TNP-7Q" value="${esc(AV.tagQ)}" onkeydown="if(event.key==='Enter'){AV.tagQ=this.value;adminGo('tags')}"><button class="btn btn-ghost btn-sm" onclick="AV.tagQ=document.getElementById('tq').value;adminGo('tags')">Search</button>
+      <div class="chips">${st.map(s=>`<button class="chip ${AV.tagFilter===s?'on':''}" onclick="AV.tagFilter='${s}';adminGo('tags')">${s==='ALL'?'All':s[0]+s.slice(1).toLowerCase()} · ${d.counts[s]||0}</button>`).join('')}</div></div>
+    <table class="t"><tr><th>Code</th><th>Batch</th><th>Type</th><th>Status</th><th></th></tr>
+    ${d.tags.map(t=>`<tr><td><b>${esc(t.code)}</b></td><td>${esc(t.batch)}</td><td>${esc(t.type)}</td><td><span class="tag ${cls[t.status]}">${t.status}</span></td>
+      <td>${t.status==='SUSPENDED'?`<button class="btn btn-ghost btn-sm" onclick="adminAct('tag.set',{code:'${t.code}',status:'ACTIVE'},'Reactivated')">Reactivate</button>`:t.status==='ACTIVE'?`<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="adminAct('tag.set',{code:'${t.code}',status:'SUSPENDED'},'Suspended')">Suspend</button>`:''}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">No tags match.</td></tr>'}</table>
+    ${d.total>d.tags.length?`<p class="muted" style="margin-top:10px">Showing ${d.tags.length} of ${d.total}. Search to find a tag.</p>`:''}</div>`;
+},
+support(d){
+  const u=AV.user;
+  return`<div class="atop"><div><h2>Support</h2><div class="muted">Search by full mobile number, vehicle number or tag code. Personal data stays masked.</div></div></div>
+  <div class="panel"><div class="filters" style="margin:0"><input id="sq" style="flex:1;min-width:240px" placeholder="e.g. 9845012210, KA01AB1234 or TNP-7Q2X9" value="${esc(AV.supQ)}" onkeydown="if(event.key==='Enter'){AV.supQ=this.value;adminGo('support')}"><button class="btn btn-ink" onclick="AV.supQ=document.getElementById('sq').value;adminGo('support')">Search</button></div>
+    ${AV.supQ?`<table class="t" style="margin-top:14px"><tr><th>User</th><th>Mobile</th><th>Vehicles</th><th>Tags</th><th>Joined</th><th></th></tr>
+      ${d.results.map(o=>`<tr><td><b>${esc(o.name)}</b></td><td>${esc(o.phone)}</td><td>${o.vehicles.map(esc).join(', ')}</td><td>${o.tags.map(esc).join(', ')||'—'}</td><td>${fmtDate(o.joined)}</td><td><button class="btn btn-ghost btn-sm" onclick="AV.supSel='${esc(o.id)}';adminGo('support',true)">Open</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">No user found. Use the full 10-digit mobile or full vehicle number.</td></tr>'}</table>`:''}
+  </div>
+  ${u?`<div class="panel"><h3>${esc(u.name)} · ${esc(u.phone)}</h3>
+    <div class="filters">${u.tags.map(t=>`<button class="btn btn-ghost btn-sm" onclick="adminAct('tag.reset',{code:'${esc(t)}'},'Tag reset. The owner can link it again.')">Reset tag ${esc(t)}</button>`).join('')}</div>
+    <table class="t"><tr><th>Time</th><th>Vehicle</th><th>Reason</th><th>Status</th></tr>${u.alerts.map(a=>`<tr><td>${ago(a.time)}</td><td>${esc(a.reg)}</td><td>${REASONS[a.reason].en}</td><td>${statusTag(a.status)}</td></tr>`).join('')||'<tr><td colspan="4" class="muted">No alerts.</td></tr>'}</table></div>`:''}`;
+},
+abuse(d){return`<div class="atop"><div><h2>Abuse queue</h2><div class="muted">Spam reporters and rate-limit breaches</div></div></div>
+  <div class="panel"><h3>Needs review (${d.open.length})</h3><table class="t"><tr><th>When</th><th>Reporter</th><th>Problem</th><th>Detail</th><th>Tag</th><th></th></tr>
+    ${d.open.map(a=>`<tr><td>${ago(a.time)}</td><td><b>${esc(a.reporter)}</b></td><td>${esc(a.type)}</td><td>${esc(a.detail)}</td><td>${esc(a.tag)}</td><td style="white-space:nowrap"><button class="btn btn-red btn-sm" onclick="adminAct('abuse.block',{id:${+a.id}},'Blocked')">Block</button> <button class="btn btn-ghost btn-sm" onclick="adminAct('abuse.dismiss',{id:${+a.id}},'Dismissed')">Dismiss</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">All clear.</td></tr>'}</table></div>
+  <div class="cols2">
+    <div class="panel"><h3>Platform block list</h3><p class="muted" style="margin-bottom:10px">These numbers cannot send any alert.</p><table class="t">${d.platform.map(b=>`<tr><td>🚫 ${esc(b.label)}</td><td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="adminAct('block.remove',{id:${JSON.stringify(b.id)}},'Unblocked')">Unblock</button></td></tr>`).join('')||'<tr><td class="muted">Empty</td></tr>'}</table></div>
+    <div class="panel"><h3>Blocked by owners</h3><p class="muted" style="margin-bottom:10px">Owners blocked these reporters.</p><table class="t">${d.owner.map(b=>`<tr><td>${esc(b.label)} <span class="muted">· ${b.n} owner(s)</span></td><td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="adminAct('block.platform',{id:${JSON.stringify(b.id)}},'Blocked everywhere')">Block everywhere</button></td></tr>`).join('')||'<tr><td class="muted">None yet</td></tr>'}</table></div>
+  </div>
+  <div class="panel"><h3>Limits in force</h3><table class="t"><tr><td>Reports per reporter</td><td><b>5 per hour</b></td></tr><tr><td>Reports per tag</td><td><b>10 per hour</b></td></tr><tr><td>OTP requests per number</td><td><b>5 per hour</b></td></tr><tr><td>Same tag + same reason</td><td><b>Merged within 10 min</b></td></tr></table></div>`},
+orders(d){return`<div class="atop"><div><h2>Orders</h2><div class="muted">Status changes show in the customer's app</div></div></div>
+  <div class="panel"><table class="t"><tr><th>Order</th><th>Date</th><th>Customer</th><th>Pack</th><th>Qty</th><th>Amount</th><th>Payment</th><th>PIN</th><th>Status</th></tr>
+  ${d.orders.map(x=>`<tr><td><b>${esc(x.id)}</b></td><td>${fmtDate(x.time)}</td><td>${esc(x.name)}<br><span class="muted">${esc(x.phone)}</span></td><td>${esc(x.pack)}</td><td>${x.qty}</td><td>₹${x.amount}</td><td>${esc(x.pay)}</td><td>${esc(x.pin)}</td>
+    <td><select class="sel" onchange="adminAct('order.status',{id:'${esc(x.id)}',status:this.value},'Order ${esc(x.id)}: '+this.value)">${d.stages.map(s=>`<option ${s===x.status?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')||'<tr><td colspan="9" class="muted">No orders yet.</td></tr>'}</table></div>`},
+leads(d){return`<div class="atop"><div><h2>Business leads</h2><div class="muted">From "Request bulk pricing" on the website</div></div></div>
+  <div class="panel"><table class="t"><tr><th>When</th><th>Organisation</th><th>Type</th><th>Vehicles</th><th>City</th><th>Contact</th><th>Status</th></tr>
+  ${d.leads.map(l=>`<tr><td>${ago(l.time)}</td><td><b>${esc(l.org)}</b></td><td>${esc(l.type)}</td><td>${esc(l.count)}</td><td>${esc(l.city)}</td><td>${esc(l.name)} · ${esc(l.phone)}</td>
+    <td><select class="sel" onchange="adminAct('lead.status',{id:${JSON.stringify(l.id)},status:this.value})">${d.stages.map(s=>`<option ${l.status===s?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')||'<tr><td colspan="7" class="muted">No leads yet.</td></tr>'}</table></div>`},
+admins(d){const n=AV.newAdmin;return`<div class="atop"><div><h2>Admin users</h2><div class="muted">Role-based access. Two-step login for everyone.</div></div></div>
+  ${n?`<div class="panel" style="border-color:var(--green)"><h3>✅ ${esc(n.email)} created</h3><p class="muted">Give this to the new admin. They scan it in Google Authenticator. It is shown only once.</p><div style="width:180px;margin:12px 0">${qrSVG(n.uri)}</div><p class="muted">Setup key: <code>${esc(n.secret)}</code></p><button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="AV.newAdmin=null;renderAdmin()">Done</button></div>`:''}
+  <div class="panel"><table class="t"><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last login</th><th></th></tr>
+  ${d.admins.map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.email)}</td><td><span class="tag t-amber">${esc(a.role)}</span></td><td>${a.active?'<span class="tag t-green">Active</span>':'<span class="tag t-grey">Off</span>'}</td><td>${a.last?ago(a.last):'—'}</td><td>${a.id===d.me?'<span class="muted">You</span>':`<button class="btn btn-ghost btn-sm" onclick="adminAct('admin.toggle',{id:${JSON.stringify(a.id)}},'Updated')">${a.active?'Switch off':'Switch on'}</button>`}</td></tr>`).join('')}</table></div>
+  <div class="cols2">
+    <div class="panel"><h3>Add an admin</h3><form onsubmit="createAdmin(event)">
+      <div class="field"><label>Name</label><input name="name" required maxlength="80"></div>
+      <div class="field"><label>Email</label><input name="email" type="email" required></div>
+      <div class="field"><label>Temporary password (10+ characters)</label><input name="password" type="text" minlength="10" required></div>
+      <div class="field"><label>Role</label><select name="role">${Object.keys(d.roles).map(r=>`<option>${r}</option>`).join('')}</select></div>
+      <button class="btn btn-ink" style="margin-top:14px">Create admin</button></form></div>
+    <div class="panel"><h3>Change my password</h3><form onsubmit="changePw(event)">
+      <div class="field"><label>Current password</label><input name="current" type="password" required></div>
+      <div class="field"><label>New password (10+ characters)</label><input name="password" type="password" minlength="10" required></div>
+      <button class="btn btn-ink" style="margin-top:14px">Change password</button></form></div>
+  </div>
+  <div class="panel"><h3>What each role can open</h3><table class="t"><tr><th>Section</th>${Object.keys(d.roles).map(r=>`<th>${r}</th>`).join('')}</tr>
+  ${Object.entries(APAGES).map(([k,[,l]])=>`<tr><td>${l}</td>${Object.values(d.roles).map(p=>`<td>${p.includes(k)?'<span class="ok">✓</span>':'<span class="muted">—</span>'}</td>`).join('')}</tr>`).join('')}</table></div>`},
+audit(d){return`<div class="atop"><div><h2>Audit log</h2><div class="muted">Every admin action, newest first. Cannot be edited.</div></div></div>
+  <div class="panel"><table class="t"><tr><th>When</th><th>Admin</th><th>Action</th><th>Item</th></tr>
+  ${d.log.map(a=>`<tr><td style="white-space:nowrap">${new Date(a.at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td><td>${esc(a.actor)}</td><td>${esc(a.action)}</td><td>${esc(a.entity)}</td></tr>`).join('')||'<tr><td colspan="4" class="muted">Nothing yet.</td></tr>'}</table></div>`}
+};
+async function genBatch(e){e.preventDefault();const r=await adminAct('batch.create',{type:document.getElementById('bt').value,count:+document.getElementById('bn').value});if(r)toast(`Batch ${r.id} created with ${r.count} tags. Now print the stickers.`)}
+async function createAdmin(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const r=await adminAct('admin.create',f,'Admin created');if(r&&r.uri){AV.newAdmin={email:f.email,secret:r.secret,uri:r.uri};renderAdmin()}}
+async function changePw(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));if(await adminAct('admin.password',f,'Password changed'))e.target.reset()}
+
+/* ---------- printable sticker sheet ---------- */
+async function printStickers(batch){
+  let d;try{d=await api('GET','admin/data',null,{page:'codes',batch})}catch(e){toast(e.message);return}
+  const site=(d.site||siteBase()).replace(/\/$/,'');
+  const sheet=document.getElementById('printSheet');
+  sheet.innerHTML=`<div class="ps-bar"><b>${esc(d.batch)} · ${d.codes.length} stickers</b><span class="muted">QR opens ${esc(site)}/?t=CODE</span>
+      <span style="flex:1"></span><button class="btn btn-ghost btn-sm" onclick="downloadCSV()">⬇ CSV for printer</button><button class="btn btn-amber btn-sm" onclick="try{window.print()}catch(e){toast('Printing is blocked here. Open the site in your browser.')}">🖨️ Print</button><button class="btn btn-ink btn-sm" onclick="closePrint()">Close</button></div>
+    <div class="ps-grid">${d.codes.map(c=>`<div class="stk"><div class="stk-top">Need me to move?<br><span>गाड़ी हटवानी है?</span></div><div class="stk-qr">${qrSVG(site+'/?t='+c)}</div><div class="stk-bot">Scan to contact owner<br><span>स्कैन करें, मालिक से बात करें</span></div><div class="stk-code">${c}</div><div class="stk-brand">Tag<b>N</b>Park</div></div>`).join('')}</div>`;
+  sheet.dataset.csv='code,qr_url,type\n'+d.codes.map(c=>`${c},${site}/?t=${c},${d.type}`).join('\n');sheet.dataset.name=d.batch;
+  document.body.classList.add('printing');window.scrollTo(0,0);
+}
+function closePrint(){document.body.classList.remove('printing');document.getElementById('printSheet').innerHTML=''}
+function downloadCSV(){const s=document.getElementById('printSheet');const csv=s.dataset.csv;
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=s.dataset.name+'-stickers.csv';document.body.appendChild(a);a.click();a.remove()}catch(e){}
+  try{navigator.clipboard.writeText(csv).then(()=>toast('CSV downloaded (also copied)')).catch(()=>toast('CSV downloaded'))}catch(e){toast('CSV ready')}}
+
+/* =====================================================================
+   INSTALL AS APP (PWA) + START
+   ===================================================================== */
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;document.querySelectorAll('.installBtn').forEach(b=>b.style.display='')});
+window.addEventListener('appinstalled',()=>{installEvt=null;document.querySelectorAll('.installBtn').forEach(b=>b.style.display='none');toast('TagNPark app installed')});
+async function installApp(){if(!installEvt){toast('Use your browser menu: Install app / Add to Home screen');return}installEvt.prompt();try{await installEvt.userChoice}catch(e){}installEvt=null}
+try{if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+
+function resetDemo(){if(MODE==='remote'){toast('Reset only works in demo mode');return}LOCAL.reset();TOKEN='';ls('tnp_token',null);S=fresh();A.screen='login';A.loaded=false;scanState=null;AV.me=null;renderApp();toast('Demo reset')}
+
+(async function start(){
+  renderPrices();
+  await detectMode();
+  if(MODE==='local'&&TOKEN&&TOKEN!=='demo'){TOKEN='';ls('tnp_token',null)}
+  const site=siteBase();
+  document.getElementById('heroQR').innerHTML=qrSVG(site+'/?t=TNP-7Q2X9');
+  document.getElementById('dlQR').innerHTML=qrSVG(site+'/index.html#app');
+  document.querySelectorAll('.mode-note').forEach(n=>n.textContent=MODE==='remote'?'Live: connected to the TagNPark server.':'Demo: everything you add is saved in this browser only.');
+  if(location.pathname.endsWith('/admin')&&!location.hash)location.hash='admin';
+  try{const t=new URLSearchParams(location.search).get('t');if(t&&CODE_RE.test(t)){history.replaceState(null,'',location.pathname.replace(/[^/]*$/,'')+'#scan-'+t.toUpperCase())}}catch(e){}
+  route();
+})();
+
+</script>
+</body>
+</html>
